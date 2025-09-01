@@ -410,11 +410,22 @@ function POwO_Config_Harmonics()
     let TextArea = POwO_docgetel("field_harmonics")
     let TextWipers = TextArea.value.split(/\r\n|\r|\n/).filter(l => l.trim() !== "")
     wipers = []
-    for(let i = 0 ; i < TextWipers.length ; i++)
+    for(let i = 0 ; i < TextWipers.length ; i++)//generate wipers
     {
         console.log(i)
         let WiperConfigArray = TextWipers[i].split(',')
         wipers.push(new wiper(Number(WiperConfigArray[0]),Number(WiperConfigArray[1]),Number(WiperConfigArray[2])))
+    }
+
+    //configure initial phase
+    //refer to update wipers
+    for(let i = 0 ; i < wipers.length; i++)
+    {
+        wipers[i].currentDirection = 0
+        for(let j = 0 ; j <= i ; j++)
+        {
+            wipers[i].currentDirection += wipers[j].configPhase 
+        }
     }
 
     console.log(wipers)
