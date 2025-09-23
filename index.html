@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,6 +139,7 @@
         }
 
         .collapseBox {
+            color:white;
             width: 0px;
             height:550px;
             overflow: hidden;
@@ -201,8 +203,8 @@
     <div class="collapseBox" id="settingsBox_Misc">
         <b style="color:White;font-size:24px">Misc<br>Configs</b><br><br>
         time scale : <input id="field_timeScale" value="0.005"><br>
-        space scale : <input id="field_spaceScale" value="96"><br>
-        trail length : <input id="field_trailLength" value="1024"><br>
+        space scale : <input id="field_spaceScale" value="64"><br>
+        trail length : <input id="field_trailLength" value="3000"><br>
         <br>
         trailX length : <input id="field_trailX_length" value="128"><br>
         trailY length : <input id="field_trailY_length" value="128"><br>
@@ -226,7 +228,7 @@
     </div>
     <div class="collapseBox" id="settingsBox_Visuals">
         <b style="color:White;font-size:24px">Visual<br>Configs</b><br><br>
-        node radius : <input id="field_visual_node_radius" value="16"><br>
+        node radius : <input id="field_visual_node_radius" value="8"><br>
         node color : <input id="field_visual_node_color_r" value="255"><input id="field_visual_node_color_g" value="192"><input id="field_visual_node_color_b" value="0"><input id="field_visual_node_color_a" value="1"><br>
         arm color : <input id="field_visual_arm_color_r" value="255"><input id="field_visual_arm_color_g" value="192"><input id="field_visual_arm_color_b" value="0"><input id="field_visual_arm_color_a" value="1"><br>
         arm thickness : <input id="field_visual_arm_thickness" value="5"><text style="color:#808080">// to turn this off, set thickness to 0</text><br>
@@ -574,19 +576,19 @@ class wiper {
     }
 }
 
-var wipers = [new wiper(90,0,1), new wiper(-720,0,1), new wiper(360,0,1), new wiper(720,0,1)]
+var wipers = [new wiper(22.5,0,1), new wiper(-360,0,2), new wiper(720,0,1), new wiper(360,0,0.5)]
 var tracer = [0,0] //PosX and PosY
 
 var tracerTrail = [] //an array of XY positions
-var tracerTrail_size = 512
+var tracerTrail_size = 3000 //how long the trail should be
 var timeScale = 0.005
-var spaceScale = 96
+var spaceScale = 64
 var tracerTrailX = [] //an array of XY positions
 var tracerTrailX_size = 128
 var tracerTrailY = [] //an array of XY positions
 var tracerTrailY_size = 128
 
-var visual_node_radius = 16
+var visual_node_radius = 8
 var visual_node_color = [255,192,0,1]
 var visual_arm_color = [255,192,0,1]
 var visual_arm_thickness = 5
