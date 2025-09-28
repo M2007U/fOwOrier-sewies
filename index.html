@@ -584,7 +584,7 @@ function POwO_drawCanvas()
         {
             KanvasContext.lineTo(cx + wipers[i].currentPosX, cy - wipers[i].currentPosY);
         }
-        KanvasContext.lineTo(cx + tracer[0], cy - tracer[1])
+        KanvasContext.lineTo(cx + lastNode[0], cy - lastNode[1])
         KanvasContext.lineWidth = visual_arm_thickness;
         KanvasContext.strokeStyle = POwO_ArrayToColorString(visual_arm_color) // ring color
         KanvasContext.stroke();
@@ -881,7 +881,7 @@ var tracerNodeTrailW_Zoom = 0
 function POwO_RUNGRAPH()
 {
     POwO_UpdateWipers();
-    if (tracerSampleTime === tracerSampleInterval-1)
+    if (tracerSampleTime >= tracerSampleInterval-1)
     {
         POwO_trailNodeGenerate();
         tracerSampleTime = 0
