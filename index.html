@@ -316,7 +316,10 @@ function POwO_StringArrayToNumberArray(InArray)
     return OutArray;
 }
 
-function POwO_UpdateWipers()
+
+
+
+function POwO_UpdateWipers() //spin the wipers
 {
     /*
     
@@ -379,7 +382,7 @@ function POwO_UpdateWipers()
 
 }
 
-function POwO_TrailMainTain(InTrailArray, InTrailSize, InPopAttemptCount, InGetNewPosX, InGetNewPosY)
+function POwO_TrailMainTain(InTrailArray, InTrailSize, InPopAttemptCount, InGetNewPosX, InGetNewPosY) //keep the trail length in range
 {
     for(let i = 0 ; i < InPopAttemptCount ; i++)
     {
@@ -474,7 +477,7 @@ function POwO_TrailColorCalculateCache()
     }
 }
 
-function POwO_trailNodeGenerate() //Maintain what does the trails looks like
+function POwO_trailNodeGenerate() //Maintain what does the trails looks like on the canvas
 {
     
 
@@ -483,20 +486,20 @@ function POwO_trailNodeGenerate() //Maintain what does the trails looks like
     for(let i = 0 ; i < tracerNodeTrail.length ; i++)
     {
         //shift X and Y
-        tracerNodeTrail[i][0] += tracerNodeTrailW_Xspeed * timeScale
-        tracerNodeTrail[i][1] += tracerNodeTrailW_Yspeed * timeScale
+        tracerNodeTrail[i][0] += tracerNodeTrailW_Xspeed * spaceScale * timeScale * tracerSampleInterval
+        tracerNodeTrail[i][1] += tracerNodeTrailW_Yspeed * spaceScale * timeScale * tracerSampleInterval
 
         //rotate
         let temp_rot_angle = Math.atan2(tracerNodeTrail[i][1], tracerNodeTrail[i][0])
         let temp_rot_radius = Math.sqrt(Math.pow(tracerNodeTrail[i][0],2) + Math.pow(tracerNodeTrail[i][1],2))
-        temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale
+        temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale * tracerSampleInterval
         tracerNodeTrail[i] = [ Math.cos(temp_rot_angle) * temp_rot_radius , Math.sin(temp_rot_angle) * temp_rot_radius ]
 
 
         //zoom
         let temp_zom_angle = Math.atan2(tracerNodeTrail[i][1], tracerNodeTrail[i][0])
-        tracerNodeTrail[i][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale
-        tracerNodeTrail[i][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale
+        tracerNodeTrail[i][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+        tracerNodeTrail[i][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
     }
 
 
@@ -505,11 +508,11 @@ function POwO_trailNodeGenerate() //Maintain what does the trails looks like
     POwO_TrailMainTain(tracerNodeTrailY, tracerNodeTrailY_size, 2, 0, tracer[1])
     for(let i = 0 ; i < tracerNodeTrailX.length ; i++)
     {
-        tracerNodeTrailX[i][1] += tracerNodeTrailX_speed
+        tracerNodeTrailX[i][1] += tracerNodeTrailX_speed * spaceScale * timeScale * tracerSampleInterval
     }
     for(let i = 0 ; i < tracerNodeTrailY.length ; i++)
     {
-        tracerNodeTrailY[i][0] -= tracerNodeTrailY_speed
+        tracerNodeTrailY[i][0] -= tracerNodeTrailY_speed * spaceScale * timeScale * tracerSampleInterval
     }
 
     //update wipetrails
@@ -534,20 +537,20 @@ function POwO_trailNodeGenerate() //Maintain what does the trails looks like
         for(let j = 0 ; j < tracerWipeTrail[i].length ; j++) //for every XYPos
         {
             //shift X and Y
-            tracerWipeTrail[i][j][0] += tracerNodeTrailW_Xspeed * timeScale
-            tracerWipeTrail[i][j][1] += tracerNodeTrailW_Yspeed * timeScale
+            tracerWipeTrail[i][j][0] += tracerNodeTrailW_Xspeed * spaceScale * timeScale * tracerSampleInterval
+            tracerWipeTrail[i][j][1] += tracerNodeTrailW_Yspeed * spaceScale * timeScale * tracerSampleInterval
 
             //rotate
             let temp_rot_angle = Math.atan2(tracerWipeTrail[i][j][1], tracerWipeTrail[i][j][0])
             let temp_rot_radius = Math.sqrt(Math.pow(tracerWipeTrail[i][j][0],2) + Math.pow(tracerWipeTrail[i][j][1],2))
-            temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale
+            temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale * tracerSampleInterval
             tracerWipeTrail[i][j] = [ Math.cos(temp_rot_angle) * temp_rot_radius , Math.sin(temp_rot_angle) * temp_rot_radius ]
 
 
             //zoom
             let temp_zom_angle = Math.atan2(tracerWipeTrail[i][j][1], tracerWipeTrail[i][j][0])
-            tracerWipeTrail[i][j][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale
-            tracerWipeTrail[i][j][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale
+            tracerWipeTrail[i][j][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+            tracerWipeTrail[i][j][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
         }
     }
 }
@@ -564,7 +567,7 @@ function POwO_drawCanvas_drawGradient(InCtx, InX0, InY0, InX1, InY1, InC0, InC1)
     InCtx.stroke();
 }
 
-function POwO_drawCanvas()
+function POwO_drawCanvas() //draw everything, wipers, trails, etc
 {
     //clear canvas
     let Kanvas = POwO_docgetel("kanvas");
