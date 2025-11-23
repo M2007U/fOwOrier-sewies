@@ -1,0 +1,1607 @@
+<html>
+<head>
+<title>Awatikle - FOwOrier Sewies</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    table {
+    border-collapse: collapse;
+    }
+
+    table td, table th {
+    border: 1px solid rgba(128,128,128,0.5);
+    padding: 8px;
+    text-align: center;
+    }
+
+    .Gap_100{height:100px}
+    .Gap_75{height:75px}
+    .Gap_50{height:50px}
+</style>
+</head>
+<body style="font-family: Consolas, monospace;color:white;padding: 35px;" >
+
+
+
+
+<h1>Awatikle - FOwOrier Sewies</h1>
+Version : 2025.1116.1708<br>
+Department : Memo2007Ultra - Learn2016 - Academic2017 - Science2017 - Math2023<br>
+Author : XR_XharpRazor<br>
+
+<div class="Gap_100"></div>
+<hr>
+<div class="Gap_100"></div>
+
+
+
+<h1>🟡 0 - Introduction </h1><br>
+<p>
+Fourier Series are mainly used in Audio Processing, Visual Arts, etc. The first time That I heard of Fourier Series is from a YouTube Video by 3B1B. I am also a VRChat World Creator and so I created a gadget to perform what Fourier Series can do and users can interact and adjust it's parameters.<br><br>
+Since then I have been looking into Fourier Series, the patterns it can make, the discoveries when I am messing it around. And this is why this document exsist : to compile every findings about Fourier Series.<br><br>
+I would personally suggest that you can have the following URL Opened while reading this Awatikle : <a href="https://memo2007ultra.wixsite.com/m27u-l2016/foworier-sewies">FOwOrier Sewies</a>  <br><br>
+</p>
+
+
+
+<div class="Gap_100"></div>
+
+
+<h1>🟡 1 - What is Fourier Series ? </h1>
+
+    <h2> 1.1 - Euler's Formula</h2>
+        <p>
+        Everything starts with one of the most famous equation that changes the world :<br><br>
+        $$
+        e^{i\theta} = cos(\theta) + isin(\theta)
+        $$
+        <br>
+        There are a lot of available proof of this equation, So I am going to ignore the proof here. If you need some pointers, you can try to look at the Taylor Series for $ e, cos(\theta), sin(\theta) $, or you can look from a derivative perspective and see what does $\frac{d}{d\theta}e^{i\theta}$ do.<br><br>
+        But as a quick refresher, $e^{i\theta}$ can be treated as a unit vector pointing at a direction in the complex plane where the angle from the Positive Side of the Real Axis, counter clock wise, to the Unit Vector is $\theta$ in radiant.
+        </p>
+
+    <div class="Gap_75"></div>
+
+    <h2> 1.2 - Spinning at a steady Rate </h2>
+        <p>
+        In this case we can use time $(t)$ to describe $\theta$, as $t$ increases linearly, $\theta$ also increases linearly, i.e., spinning at a steady rate. Here we can decide how fast $\theta$ is increasing, in this case we have a parameter : frequency $(f)$. We can also give $\theta$ an offset, i.e. an initial pointing direction, here we can call it phase $(\phi)$. Below is how we can describe $\theta$ :
+        <br><br>
+        $$
+        \begin{align*}
+            \theta &= ft + \phi\\
+            e^{i\theta} &= e^{i(ft+\phi)}
+        \end{align*}
+        $$
+        <br><br>
+        now we can scale this spinning unit vector to some length, which we call it the amplitude $(A)$. So a single spinning vector in the complex plane can be written as follows :
+        <br><br>
+        $$
+        \begin{equation}
+            w = Ae^{i(ft+\phi)}
+        \end{equation}
+        $$
+        <br><br>
+        if we are dealing with a lot of spining vectors, we can index them $(n)$
+        <br><br>
+        $$
+        \begin{equation}
+            w_n = A_ne^{i(f_nt+\phi_n)}
+        \end{equation}
+        $$
+        <br><br>
+        the way that Fourier Series works is that we have some numbers of vectors $(w)$, each with a steady spinning frequency $(f)$, each starting at a direction $(\phi)$ , and each has an amplitude/magnitude of $(A)$. So if we add all the vectors $w$ tip to tail, the final vector $v$ at time $t$ will be something like this :
+        <br><br>
+        $$
+        \begin{align*}
+            v_t &= A_0e^{i(f_0t+\phi_0)} + A_1e^{i(f_1t+\phi_1)} + A_2e^{i(f_2t+\phi_2)} + ... + A_ne^{i(f_nt+\phi_n)}\\\\
+            v_t &= \sum_{n=0}^{N} A_ne^{i(f_nt+\phi_n)}
+        \end{align*}
+        $$
+        </p>
+
+    <div class="Gap_75"></div>
+
+    <h2>1.3 - Compacting datas</h2>
+        <p>
+        However, I find that Sigma notation are a bit tiring to read and unpack, it is harder to see patterns in some cases, and some notations can be boiled down to something simpler. So below are some self made notations that are not used widely and will only work in this document
+        <br><br>
+        $$
+        \begin{align*}
+            v_t =
+            \begin{pmatrix}
+                A_0e^{i(f_0t+\phi_0)}\\
+                A_1e^{i(f_1t+\phi_1)}\\
+                A_2e^{i(f_2t+\phi_2)}\\
+                ...\\
+                A_ne^{i(f_nt+\phi_n)}
+            \end{pmatrix}^+
+            =
+            \begin{pmatrix}
+                f_0 & \phi_0 & A_0 \\
+                f_1 & \phi_1 & A_1 \\
+                f_2 & \phi_2 & A_2 \\
+                ... & ... & ... \\
+                f_n & \phi_n & A_n \\
+            \end{pmatrix}^{fowo\_WSpace}
+        \end{align*}
+        $$
+        </p>
+
+
+    <div class="Gap_75"></div>
+
+<div class="Gap_100"></div>
+
+<h1>🟡 2 - WorldSpace VS LocalSpace</h1>
+
+    <h2>2.1 - What's the difference ?</h2>
+        <p>
+        World space means that the rotation of the radii are relative to your screen. Local space means that the rotation of a radius is relative to its previous radius<br>
+
+        <img src="fourierSeries-01.png" style="display:block; margin:20px auto;" width="500">
+
+        assume that we have the following configurations :
+        <br><br>
+        $$
+        \begin{align*}
+            v_t &=
+            \begin{pmatrix}
+                360 & 0 & 1\\
+                0&0&1\\
+                0&0&1\\
+                0&0&1
+            \end{pmatrix}^{fowo\_Wspace}\\\\
+            v_t &=
+            \begin{pmatrix}
+                360 & 0 & 1\\
+                0&0&1\\
+                0&0&1\\
+                0&0&1
+            \end{pmatrix}^{fowo\_Lspace}
+        \end{align*}
+        $$
+        <br><br>
+        Both of them are quite similar, but both of these has extremely different results. I am aware that I am not the only one who is looking into Fourier Series, there are other creators who provide Length Ratios and Speed Ratios and share them as videos and animations.<br><br>
+
+        For the world space one, $w_0$ will be the only spinning vector, $w_1, w_2, w_3$ will be pointing to the right. In this case we will end up with a circle shifted to the right.<br><br>
+
+        For the local space one, $w_0$ will spin all $w_n$. You can imagine that every vector is a wiper, and the way that 2 wipers are connected is via a spinning motor. When the main motor spins and the rest of the motor stays, the whole structure spins. Tracing a big circle in the middle.
+        </p>
+
+    <div class="Gap_75"></div>
+
+    <h2> 2.2 - Conversion Between WorldSpace and LocalSpace </h2>
+        <p>
+        One thing to keep in mind is that fourier series examples that you usually find on YouTube are usually in worldspace, however in some special cases, you will need localspace, for example when you trying to implement this physically.
+        </p>
+
+        <div class="Gap_50"></div>
+
+        <h3>2.2.1 - LocalSpace to WorldSpace</h3>
+
+            <p>
+            Here let's try to convert LocalSpace to WorldSpace, assume that we have the following fourier series :
+            <br><br>
+            $$
+            \begin{align*}
+            v_t =
+            \begin{pmatrix}
+            45&0&1\\
+            -720&0&1\\
+            360&0&1\\
+            720&0&2
+            \end{pmatrix}^{fowo\_WSpace}
+            \end{align*}
+            $$
+            <br><br>
+            in this example we can see there are 4 spinning vectors, $w_0, w_1, w_2, w_3$, each of them having the local frequency $f_0=45, f_1=-720, f_2=360, f_3=720$, so for the first step, we can create the table as below.
+            </p>
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=45$</td>
+                    <td>$f_{local,1}=-720$</td>
+                    <td>$f_{local,2}=360$</td>
+                    <td>$f_{local,3}=720$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=?$</td>
+                    <td>$f_{world,1}=?$</td>
+                    <td>$f_{world,2}=?$</td>
+                    <td>$f_{world,3}=?$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            And now we can start filling in the blanks.
+
+            <dowoc-call title="💡 One important concept is that" color-all="255,192,0">for any spinning vector $w_m$ <br>
+            it will spin other spinning vectors $w_n$ <br>
+            by it's own local spinning frequency $f_{local,m}$ <br>
+            where $m < n$
+            </dowoc-call>
+
+            with this concept in mind, we can say that $w_0$ other than spinning itself, $w_0$ will also spin $w_1,w_2,w_3$
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=45$</td>
+                    <td>$f_{local,1}=-720$</td>
+                    <td>$f_{local,2}=360$</td>
+                    <td>$f_{local,3}=720$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=?$</td>
+                    <td>$f_{world,1}=?$</td>
+                    <td>$f_{world,2}=?$</td>
+                    <td>$f_{world,3}=?$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            now we can apply the concept to $w_1,w_2,w_3$, i.e. $w_1$ will also spin $w_2, w_3$
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=45$</td>
+                    <td>$f_{local,1}=-720$</td>
+                    <td>$f_{local,2}=360$</td>
+                    <td>$f_{local,3}=720$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td></td>
+                    <td>-720</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td></td>
+                    <td></td>
+                    <td>360</td>
+                    <td>360</td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>720</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=?$</td>
+                    <td>$f_{world,1}=?$</td>
+                    <td>$f_{world,2}=?$</td>
+                    <td>$f_{world,3}=?$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            now we can sum all the spinning amount and get the final WorldSpace Rotation for each spinning vectors<br>
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=45$</td>
+                    <td>$f_{local,1}=-720$</td>
+                    <td>$f_{local,2}=360$</td>
+                    <td>$f_{local,3}=720$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                    <td>45</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td></td>
+                    <td>-720</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td></td>
+                    <td></td>
+                    <td>360</td>
+                    <td>360</td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>720</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=45$</td>
+                    <td>$f_{world,1}=-675$</td>
+                    <td>$f_{world,2}=-315$</td>
+                    <td>$f_{world,3}=405$</td>
+                </tr>
+            </table>
+            <br><br>
+
+        <div class="Gap_50"></div>
+
+        <h3>2.2.2 - WorldSpace to LocalSpace</h3>
+
+            Let's say you some how found the following worldspace rotations from an online video.
+            <br><br>
+            $$
+            \begin{align*}
+            f_{world,0} &= 60\\
+            f_{world,1} &= -660\\
+            f_{world,2} &= -300\\
+            f_{world,3} &= 420
+            \end{align*}
+            $$
+            <br><br>
+
+            we can put them in the table just like before
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=?$</td>
+                    <td>$f_{local,1}=?$</td>
+                    <td>$f_{local,2}=?$</td>
+                    <td>$f_{local,3}=?$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td>x</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=60$</td>
+                    <td>$f_{world,1}=-660$</td>
+                    <td>$f_{world,2}=-300$</td>
+                    <td>$f_{world,3}=420$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            we can start with $w_0$ and fill in the first row
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=?$</td>
+                    <td>$f_{local,1}=?$</td>
+                    <td>$f_{local,2}=?$</td>
+                    <td>$f_{local,3}=?$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td>x</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=60$</td>
+                    <td>$f_{world,1}=-660$</td>
+                    <td>$f_{world,2}=-300$</td>
+                    <td>$f_{world,3}=420$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            if we look at $w_1$ , we can say that
+
+            <br><br>
+            $$
+                \begin{align*}
+                60 + ? &= -660\\
+                ? &= -660 - 60\\
+                ? &= -720
+                \end{align*}
+            $$
+            <br><br>
+
+            and so we can fill in the blanks
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=?$</td>
+                    <td>$f_{local,1}=?$</td>
+                    <td>$f_{local,2}=?$</td>
+                    <td>$f_{local,3}=?$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td>x</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=60$</td>
+                    <td>$f_{world,1}=-660$</td>
+                    <td>$f_{world,2}=-300$</td>
+                    <td>$f_{world,3}=420$</td>
+                </tr>
+            </table>
+            <br><br>
+
+            and we can do the same for $w_2, w_3$
+
+            <br><br>
+            <table align="center" >
+                <tr>
+                    <td></td>
+                    <td>$f_{local,0}=?$</td>
+                    <td>$f_{local,1}=?$</td>
+                    <td>$f_{local,2}=?$</td>
+                    <td>$f_{local,3}=?$</td>
+                </tr>
+                <tr>
+                    <td>$w_0$</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                    <td>60</td>
+                </tr>
+                <tr>
+                    <td>$w_1$</td>
+                    <td>x</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                    <td>-720</td>
+                </tr>
+                <tr>
+                    <td>$w_2$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>360</td>
+                    <td>360</td>
+                </tr>
+                <tr>
+                    <td>$w_3$</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>x</td>
+                    <td>720</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>$f_{world,0}=60$</td>
+                    <td>$f_{world,1}=-660$</td>
+                    <td>$f_{world,2}=-300$</td>
+                    <td>$f_{world,3}=420$</td>
+                </tr>
+            </table>
+            <br><br>
+
+        <div class="Gap_50"></div>
+
+        <h3> 2.2.3 - Wait a minute ... </h3>
+            
+            Table conversion is surly time consuming but easy to understand, but from the tables we can learn that
+            <br><br>
+            $$
+            \begin{align*}
+            f_{world,3} &= f_{local,0} + f_{local,1} + f_{local,2} + f_{local,3}\\\\
+            &= f_{world,2} + f_{local,3}
+            \end{align*}
+            $$
+            <br><br>
+
+            or we can generalize it as follows :
+
+            <br><br>
+            $$
+            \begin{align*}
+            f_{world,n} ~&=~ f_{local,0} ~+~ f_{local,1} ~+~ f_{local,2} ~+~ ... ~+~ f_{local,n}\\\\
+            f_{world,n} ~&=~ f_{world,n-1} + f_{local,n}
+            \end{align*}
+            $$
+            <br><br>
+
+            small quirk to remember is that
+
+            <br><br>
+            $$
+            \begin{align*}
+            f_{world,0} \equiv f_{local,0}
+            \end{align*}
+            $$
+            <br><br>
+            
+        <div class="Gap_50"></div>
+
+    <div class="Gap_75"></div>
+
+    <h2>2.3 - Pros and Cons</h2>
+
+        <br><br>
+        <table align="center" >
+            <tr>
+                <th>Aspects</th>
+                <th>WorldSpace</th>
+                <th>LocalSpace</th>
+            </tr>
+            <tr>
+                <td>Communitivity</td>
+                <td>you can arrange radii however you like, order doesn't matter since addition is communitive</td>
+                <td>radius are in a hierarchical structure, order matters</td>
+            </tr>
+            <tr>
+                <td>Pattern Dsicovery</td>
+                <td>harder pattern discovery for "Mandela Patterns", but some fundamental simpler shapes can be derived from here.</td>
+                <td>pattern discovery is easier, often you just need to change one frequency and you can end up with another decent pattern. The main idea is to make sure that some local frequency is a multiple of the other</td>
+            </tr>
+            <tr>
+                <td>Popularity and Convention</td>
+                <td>the popular convention that the Math community and internet uses, also makes proof easier</td>
+                <td>fOwOrier Sewies uses this, can be implemented in Game Engines since Game Engines has Hiearchy for Game Objects.</td>
+            </tr>
+        </table>
+        <br><br>
+    <div class="Gap_75"></div>
+
+<div class="Gap_100"></div>
+
+<h1>🟡 3 - Local Space Concepts</h1>
+
+    when dealing with LocalSpace configurations, there are some things to keep in mind.
+
+    <h2>3.1 - Congruency</h2>
+        In our case, if 2 LocalSpace configurations gives us the same pattern, then the both of them are congruent, or shorter, same
+    <div class="Gap_75"></div>
+
+    <h2>3.2 - Time Scaling</h2>
+        if we slow down or crank up all local frequencies of all spinning radii, it is the same pattern, i.e. congruent
+        <br><br>
+        $$
+        \begin{pmatrix}
+        f_0 & \phi_0 & A_0 \\
+        f_1 & \phi_1 & A_1 \\
+        f_2 & \phi_2 & A_2 \\
+        ...&...&...\\
+        f_n & \phi_n & A_n \\
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+        f_0k & \phi_0 & A_0 \\
+        f_1k & \phi_1 & A_1 \\
+        f_2k & \phi_2 & A_2 \\
+        ...&...&...\\
+        f_nk & \phi_n & A_n \\
+        \end{pmatrix}^{fowo\_LSpace}
+        ~,~
+        k \in R
+        $$
+    <div class="Gap_75"></div>
+
+    <h2>3.3 - Space Scaling</h2>
+        f we scale all the amplitude by the same amount, we are just zooming in or out of the pattern, i.e. it doesn't change the pattern, i.e. congruent
+        <br><br>
+        $$
+        \begin{pmatrix}
+        f_0 & \phi_0 & A_0 \\
+        f_1 & \phi_1 & A_1 \\
+        f_2 & \phi_2 & A_2 \\
+        ...&...&...\\
+        f_n & \phi_n & A_n \\
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+        f_0 & \phi_0 & A_0k \\
+        f_1 & \phi_1 & A_1k \\
+        f_2 & \phi_2 & A_2k \\
+        ...&...&...\\
+        f_n & \phi_n & A_nk \\
+        \end{pmatrix}^{fowo\_LSpace}
+        ~,~
+        k \in R
+        $$
+    <div class="Gap_75"></div>
+
+    <h2>3.4 - Dot Collapse</h2>
+        if a radius $w_z$ has an amplitude $a_z$ of 0, it can be combined with it's next radius, and the pattern will stay congruent
+        $$
+        <br><br>
+        \begin{pmatrix}
+        ...&...&...\\
+        f_z & p_z & 0 \\
+        f_n & p_n & a_n \\
+        ...&...&...
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+        ...&...&...\\
+        f_z + f_n & p_z + p_n & a_n \\
+        ...&...&...
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+    <div class="Gap_75"></div>
+
+<div class="Gap_100"></div>
+
+<h1>🟡 4 - Pattern making</h1>
+
+    In this section we will be looking at fourier series in the entire complex plane and see how we can make different patterns.
+    Remember the URL at the very beginning ? It is better to pull that up now OwO.
+
+    <dowoc-call title="✏️ Note" color-all="64,128,255" >
+        if you saw any matrix notation for FOwOrierSewies in Local space, this means you can simple copy the given numbers separated by commas into the Harmonic Config Box in the URL
+    </dowoc-call>
+
+    <dowoc-call title="⚠️ Warning" color-all="255,128,0">
+        when you see a LocalSpace configurations, these are only templates, not rules, feel free to change different parameters to different values, the template is made for starting somewhere
+    </dowoc-call>
+
+    <h2>4.1 - University Fourier Series</h2>
+        One of the reason why we have fourier series in University is because fourier series and fourier transform can be used to construct some periodic patterns, here are a 2 examples for warm ups
+        <br><br>
+        $$
+        sawtooth~wave~:~
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        2&0&\frac{1}{2}\\
+        3&0&\frac{1}{3}\\
+        ...&...&...\\
+        n&0&\frac{1}{n}\\
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        1&0&\frac{1}{2}\\
+        1&0&\frac{1}{3}\\
+        ...&...&...\\
+        1&0&\frac{1}{n}\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        $$
+        square~wave~:~
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        3&0&\frac{1}{3}\\
+        5&0&\frac{1}{5}\\
+        ...&...&...\\
+        2n+1&0&\frac{1}{2n+1}\\
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        2&0&\frac{1}{2}\\
+        2&0&\frac{1}{3}\\
+        ...&...&...\\
+        2&0&\frac{1}{2n+1}\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+        in this case, these 2 examples only focuses on the y-value of the fourier series (i.e. the imaginary part).
+    <div class="Gap_75"></div>
+
+    <h2>4.2 - Simplest Shape : Centered Circle</h2>
+        Let's start with the simplest shape that Fourier Series can trace, a simple circle :
+
+        <dowoc-call title="⬅️ example" color-all="32,192,64">
+        $$
+        \begin{pmatrix}
+        360&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        </dowoc-call>
+
+        this means that we have a spinning radius spinning at $360deg/s$ with a radius of $1$<br><br>
+
+        we can also offset the circle by adding an "offset radius"
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        360&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        \rightarrow
+        \begin{pmatrix}
+        0&direction&distance\\
+        360&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        ~,~distance \in R~,~direction \in R
+        $$
+        <br><br>
+
+    <div class="Gap_75"></div>
+
+    <h2>4.3 - Flowers and Stars</h2>
+
+        to make a flower or star, we need at least 2 spinning radii. In this case,we can have the following template :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1 & 0 & 1\\
+        f & 0 & a
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        here we can try $f \in Z, a \in R$
+
+        this template can be used to make an f-petal flower. If $f=4$, then it is a 4-petal flower
+        you can also change $a$ to determine if it is a star or a flower.
+
+        here we can try $f \in Q$
+        let's define that
+
+        <br><br>
+        $$
+        f = \frac{p}{s} = \frac{petal}{step}
+        $$
+        <br><br>
+
+        where $p$ is petal count and $s$ is step. In this case, what we meant by "step" here is<br>
+        
+        "when it is done tracing a petal, which petal will it draw next ?",<br>
+        
+        if $s=2$, then it means that "when I am done with this petal, I will draw the next 2nd petal",<br>
+        
+        if $s=n$, then it means that "when I am done with this petal, I will draw the next Nth petal"<br><br>
+
+        Another way to comprehend this is $f$ determines how fast it spins relative to $w_0$, it wants to spin $p$ times faster, but not too fast, slow down by $s$, that's why it misses a few petals<br><br>
+
+        here we can try
+
+        <dowoc-call title="⬅️ example" color-all="32,192,64">
+            $$
+            \begin{pmatrix}
+            1 & 0 & 1\\
+            \frac{16}{5} = 3.2 & 0 & a
+            \end{pmatrix}^{fowo\_LSpace}
+            \equiv
+            \begin{pmatrix}
+            10 & 0 & 1\\
+            32 & 0 & a
+            \end{pmatrix}^{fowo\_LSpace}
+            \equiv
+            \begin{pmatrix}
+            5&0&1\\
+            16&0&a
+            \end{pmatrix}
+            $$
+        </dowoc-call>
+
+        what you will end up is a 16-petal flower, but with a 5-petal-skip<br><br>
+
+        <i>wait a minute ...</i><br><br>
+
+        if your eyes are sharp enough, you might realize that some how $f_0 = s , f_1 = p$, and yes it can be proved :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1 & 0 & 1\\
+        f & 0 & a
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+        1 & 0 & 1\\
+        \frac{p}{s} & 0 & a
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+        s & 0 & 1\\
+        p & 0 & a
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        
+
+    <div class="Gap_75"></div>
+
+    <h2>4.4 - Swiping Lines</h2>
+        here we can try to draw a straight line, we can start from the worldSpace perspective and convert it into the localSpace perspective
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1&0&1\\
+        -1&0&1\\
+        1&0&1\\
+        -1&0&1\\
+        1&0&1\\
+        ...&...&...\\
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&1\\
+        -2&0&1\\
+        2&0&1\\
+        -2&0&1\\
+        2&0&1\\
+        ...&...&...\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        <dowoc-call title="💡 turn this into a flower" color-all="255,192,0">
+            now you can add a spinning vector as $w_0$ to set the whole structure spinning
+            <br><br>
+            $$
+            \begin{pmatrix}
+            1&0&1\\
+            -2&0&1\\
+            2&0&1\\
+            -2&0&1\\
+            2&0&1\\
+            ...&...&...\\
+            \end{pmatrix}^{fowo\_LSpace}
+            \rightarrow
+            \begin{pmatrix}
+            R&0&D\\
+            1&0&1\\
+            -2&0&1\\
+            2&0&1\\
+            -2&0&1\\
+            2&0&1\\
+            ...&...&...\\
+            \end{pmatrix}^{fowo\_LSpace}
+            $$
+
+        </dowoc-call>
+
+    <div class="Gap_75"></div>
+
+    <h2>4.5 - (S,-kP,P,kP) family</h2>
+
+        FOwOrier Sewies was premiered in a VRChat World I've made : Dimension Structure - A07:R06 - Kontainer
+        during that time, I was exploring Fourier Series on my selfmade VRChat gadget in my University Classroom (South Dakota State University - Daktronics Engineering Hall Room370). And I came across the following configuration
+
+        
+        <dowoc-call title="🙃 I put this in that thing" color-all="32,192,64">
+            $$
+            \begin{pmatrix}
+            60 & 0 & 1\\
+            -720 & 0 & 1\\
+            120 & 0 & 1\\
+            720 & 0 & 1
+            \end{pmatrix}^{fowo\_LSpace}
+            $$
+        </dowoc-call>
+
+        and so I keep changing $w_0$ and ended up with a series of patterns. Here's one pattern that I've found :
+
+        let template be :
+        <br><br>
+        $$
+        \begin{pmatrix}
+        f&0&1\\
+        -720&0&1\\
+        120&0&1\\
+        720&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+        then I found that :
+
+        <table align="center">
+            <tr>
+                <th>f</th>
+                <th>f</th>
+                <th>f</th>
+                <th>p</th>
+                <th>s</th>
+            </tr>
+
+            <tr><td>10</td><td>130</td><td>250</td><td>12</td><td>1</td></tr>
+            <tr><td>20</td><td>140</td><td>260</td><td>6</td><td>1</td></tr>
+            <tr><td>30</td><td>150</td><td>270</td><td>4</td><td>1</td></tr>
+            <tr><td>40</td><td>160</td><td>280</td><td>3</td><td>1</td></tr>
+
+            <tr><td>50</td><td>170</td><td>290</td><td>12</td><td>5</td></tr>
+            <tr><td>60</td><td>180</td><td>300</td><td>2</td><td>1</td></tr>
+            <tr><td>70</td><td>190</td><td>310</td><td>12</td><td>7</td></tr>
+            <tr><td>80</td><td>200</td><td>320</td><td>3</td><td>1</td></tr>
+
+            <tr><td>90</td><td>210</td><td>330</td><td>4</td><td>1</td></tr>
+            <tr><td>100</td><td>220</td><td>340</td><td>6</td><td>1</td></tr>
+            <tr><td>110</td><td>230</td><td>350</td><td>12</td><td>1</td></tr>
+            <tr><td>120</td><td>240</td><td>360</td><td>1</td><td>1</td></tr>
+        </table>
+        <br><br>
+
+        from the experiments, we can see that $f_0$ has something to do with $f_2=120$,<br><br>
+
+        for $f_0 = 10,20,30,40,60,120$ where $f_0 ~mod~ f_2 = 0$,
+        $f_0$ divides $f_2$ perfectly, and $\frac{f_2}{f_0} = \frac{120}{f_0} = p$<br><br>
+
+        things are trickier for $f_0 = 50,70$<br>
+        $50,70$ does not divide $120$ perfectly,<br>
+        in this case, $f_1=-720, f_3=720$ are for optional decorations, we can remove them for now, and we will end up with
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+            50,70&0&1\\
+            -720&0&1\\
+            120&0&1\\
+            720&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        \rightarrow
+        \begin{pmatrix}
+            50,70&0&1\\
+            120&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        \equiv
+        \begin{pmatrix}
+            5,7&0&1\\
+            12&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        :=
+        \begin{pmatrix}
+            s&0&1\\
+            p&0&a
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+        In this case the "Flower Formula" can be used to explain why $f_0=50,70$ will give a step of $s=5,7$
+
+        So we can generalize our template to the following :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        s&0&1\\
+        -720&0&1\\
+        p&0&1\\
+        720&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+        But what about the $f_1=-720$ and the $f_3=720$ ?
+        for now we can lock $f_0=0$ and we can try vary $f_1,f_3$
+        if we keep $f_1 = -f_3$ then the pattern will be vertically symetrical.
+        this means that $f_1f_3$ in this case are truly meant for decorations and complexity
+        but for convention and "betterness", it is better to let 
+
+        <br><br>
+        $$
+        f_3 = k \times p ~,~ f_1 = -f_3 ~,~ k \in Q
+        $$
+        <br><br>
+        in our example, if $f_2 = 120$, then It is recommended that $f_3$ can be $180 (= 120 \times \frac{3}{2}),360 (= 120 \times 3),270 (= 120 \times \frac{9}{4}),240 (= 120 \times 2),etc$
+        and our template becomes
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        s&0&1\\
+        -kp&0&1\\
+        p&0&1\\
+        kp&0&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        <dowoc-call title="⚠️ this is a template, not a rule" color-all="255,128,0">
+            you can also try $p=360 ~,~ s \in \{x|x=10\times n~,~n \in N\}$, and you can also try changing $A_0, A_1, A_2, A_3$ as well
+        </dowoc-call>
+
+    <div class="Gap_75"></div>
+
+    <h2>4.6 - Arithmetic Frequency and Geometric Amplitudes</h2>
+
+        Here is what a sawtooth wave looks like :
+
+        <br><br>
+        $$
+        sawtooth~wave~:~
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        2&0&\frac{1}{2}\\
+        3&0&\frac{1}{3}\\
+        ...&...&...\\
+        n&0&\frac{1}{n}\\
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        1&0&\frac{1}{2}\\
+        1&0&\frac{1}{3}\\
+        ...&...&...\\
+        1&0&\frac{1}{n}\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        here the amplitudes are decreasing as the denominator is arithmetically increasing.
+        but what if the amplitude is decreasing as the denominator is geometrically increasing ?
+        in other words, here's an example :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1&0&\frac{1}{1}\\
+        2&0&\frac{1}{2}\\
+        3&0&\frac{1}{4}\\
+        ...&...&...\\
+        n&0&\frac{1}{2^{n-1}}\\
+        \end{pmatrix}^{fowo\_WSpace}
+        $$
+        <br><br>
+
+        if we don't care about the Y-position for now, we can see that the final white trail $v_t$ traces ... a circle ? *(hey, toss this into the tool and see)*
+
+        I tried with other shrinking ratios, and we ended up with different circles. Let's rewrite the whole thing in a more math friendlier way.
+
+        <br><br>
+        $$
+        \begin{align*}
+        A_n &= \frac{A_0}{k^n} ~,~ k \in R ~,~ 1 < k \\\\
+        f_n &= n+1\\\\
+        \phi_n &= 0
+        \end{align*}
+        $$
+        <br><br>
+
+        this means that the final vector $v_t$ should look something like this :
+
+        <br><br>
+        $$
+        \begin{align*}
+
+        v_t &= A_0e^{i(f_0t+\phi_0)} + A_1e^{i(f_1t+\phi_1)} + A_2e^{i(f_2t+\phi_2)} + ... + A_ne^{i(f_nt+\phi_n)}\\\\
+
+        &= \frac{A_0}{k^0}e^{i(1t+0)} + \frac{A_0}{k^1}e^{i(2t+0)} + \frac{A_0}{k^2}e^{i(3t+0)} + ... + \frac{A_0}{k^n}e^{i((n+1)t+0)}\\\\
+
+        &= \frac{A_0}{k^0}e^{i1t} + \frac{A_0}{k^1}e^{i2t} + \frac{A_0}{k^2}e^{i3t} + ... + \frac{A_0}{k^n}e^{i(n+1)t}\\\\
+
+        &= \frac{A_0}{k^0}e^{i0t+it} + \frac{A_0}{k^1}e^{i1t+it} + \frac{A_0}{k^2}e^{i2t+it} + ... + \frac{A_0}{k^n}e^{int+it}\\\\
+
+        &= A_0e^{it}(\frac{e^{i0t}}{k^0} + \frac{e^{i1t}}{k^1} + \frac{e^{i2t}}{k^2} + ... + \frac{e^{int}}{k^n})\\\\
+            
+        \end{align*}
+        $$
+
+        <dowoc-call title="💡 Hint" color-all = "255,192,0">
+            Notice that the sum in the parenthesis can be treated as a geometric series, where the first term is $\frac{e^{0it}}{k^0}$ and the ratio is $\frac{e^{it}}{k}$. in order for the sum to converge, the magnitude of the ratio must be smaller than one, that is
+            <br><br>
+            $$
+            \begin{align*}\frac{e^{it}}{k} | &< 1 \\\\
+            \because |e^{it}| &= 1 \\\\
+            \therefore |k| &> 1\end{align*}
+            $$
+            <br><br>
+            so the sum would be :
+            <br><br>
+            $$
+            \begin{align*}\frac{e^{i0t}}{k^0} + \frac{e^{i1t}}{k^1} + \frac{e^{i2t}}{k^2} + ... + \frac{e^{int}}{k^n}
+            =\frac{\frac{e^{i0t}}{k^0}}{1-\frac{e^{it}}{k}}
+            =\frac{1}{\frac{k}{k}-\frac{e^{it}}{k}}
+            =\frac{k}{k-e^{it}}
+            \end{align*}
+            $$
+        </dowoc-call>
+
+        $$
+        \begin{align*}
+
+        v_t 
+        &= A_0e^{it}(\frac{e^{i0t}}{k^0} + \frac{e^{i1t}}{k^1} + \frac{e^{i2t}}{k^2} + ... + \frac{e^{int}}{k^n})\\\\
+
+        &= A_0e^{it}(\frac{k}{k-e^{it}})~,~k > 1\\\\
+
+        &= \frac{A_0e^{it}k}{k-e^{it}}\\\\
+            
+        \end{align*}
+        $$
+        <br><br>
+
+        to proof that it is a circle, we will need to propose 2 things :
+        <ul>
+        <li> there exists a center point $c$ for the circle </li>
+        <li> the distance between $v_t$ and $c$ will be constant, which is the radius $r$ of the circle </li>
+        </ul>
+
+        let's start with finding the left most and right most point of the "circle"
+
+        <br><br>
+        $$
+        \begin{align*}
+        v_0 &= \frac{A_0e^{i0}k}{k-e^{i0}} = \frac{A_0k}{k-1}\\\\
+        v_\pi &= \frac{A_0e^{i\pi}k}{k-e^{i\pi}} = \frac{-A_0k}{k+1}
+        \end{align*}
+        $$
+        <br><br>
+
+        therefore the proposed center is :
+
+        <br><br>
+        $$
+        \begin{align*}
+        c &= (v_0+v_\pi) \div 2\\\\
+        &= ( \frac{A_0k}{k-1} + \frac{-A_0k}{k+1} ) \times \frac{1}{2}\\\\
+        &= ( \frac{1}{k-1} - \frac{1}{k+1} ) \times \frac{A_0k}{2}\\\\
+        &= ( \frac{k+1}{(k-1)(k+1)} - \frac{k-1}{(k+1)(k-1)} ) \times \frac{A_0k}{2}\\\\
+        &= \frac{k+1-k+1}{k^2-1} \times \frac{A_0k}{2}\\\\
+        &= \frac{A_0k}{k^2-1}
+        \end{align*}
+        $$
+        <br><br>
+
+        and the proposed radius is :
+
+        <br><br>
+        $$
+        \begin{align*}
+        r &= (v_0-v_\pi) \div 2\\\\
+        &= ( \frac{A_0k}{k-1} - \frac{-A_0k}{k+1} ) \times \frac{1}{2}\\\\
+        &= ( \frac{1}{k-1} + \frac{1}{k+1} ) \times \frac{A_0k}{2}\\\\
+        &= ( \frac{k+1}{(k-1)(k+1)} + \frac{k-1}{(k+1)(k-1)} ) \times \frac{A_0k}{2}\\\\
+        &= \frac{k+1+k-1}{k^2-1} \times \frac{A_0k}{2}\\\\
+        &= \frac{A_0k^2}{k^2-1}
+        \end{align*}
+        $$
+        <br><br>
+
+        now we have to prove that the following is true :
+
+        <br><br>
+        $$
+        | v_t - c |^2 = r^2
+        $$
+        <br><br>
+
+        in other words, the distance between the final vector and the center point is our proposed radius squared. And here is the proof that $v_t$ traces a circle :
+
+        <br><br>
+        $$
+        \begin{align*}
+        &v_t - c\\\\
+
+        &= \frac{A_0e^{it}k}{k-e^{it}} - \frac{A_0k}{k^2-1} = \frac{(A_0e^{it}k)(k^2-1) - (A_0k)(k-e^{it})}{(k-e^{it})(k^2-1)} \\\\
+
+        &= \frac{(A_0e^{it}k^3 - A_0e^{it}k) - (A_0k^2-A_0ke^{it})}{(k-e^{it})(k^2-1)} = \frac{A_0e^{it}k^3 - A_0k^2 }{(k-e^{it})(k^2-1)}\\\\
+
+        &= \frac{(A_0k^2)(e^{it}k - 1) }{(k-e^{it})(k^2-1)} = r\frac{(e^{it}k - 1) }{(k-e^{it})}\\\\
+        \end{align*}
+        $$
+        <br><br>
+
+        <br><br>
+        $$
+        \begin{align*}
+        &|v_t-c|^2 \\\\
+
+        &= (|r\frac{(e^{it}k - 1) }{(k-e^{it})}|)^2 = (|r|\frac{|(e^{it}k - 1)| }{|(k-e^{it})|}|)^2 = |r|^2\frac{|(e^{it}k - 1)|^2 }{|(k-e^{it})|^2} = r^2\frac{(e^{it}k-1)(e^{-it}k-1) }{(k-e^{it})(k-e^{-it})}\\\\
+        &= r^2 \frac{k^2 - ke^{it} - ke^{-it} + 1}{k^2 - ke^{-it} - ke^{it} + 1} = r^2
+        \end{align*}
+        $$
+        <br><br>
+
+        and there we have it, QED OwO/
+
+        <dowoc-call title="💡 Hint" color-all="255,192,0">
+            if these steps does not make sense at all, here are a few things you can look into, then come back :
+            <ul>
+            <li> complex numbers </li>
+            <li> complex conjugates </li>
+            <li> complex modulus </li>
+            </ul>
+        </dowoc-call>
+
+    <div class="Gap_75"></div>
+
+    <h2>4.7 - LissajOwOus Curve</h2>
+
+        before diving into the fancy curve, we first have to figure out how to create sine / cosine waves :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1&0&1\\
+        -1&0&1\\
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&1\\
+        -2&0&1\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        if we keep track of it's x-position, we can see that it is tracing a cosine wave<br><br>
+
+        let's try to add another radius $w_2$ such that it keeps pointing to the right
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1&0&1\\
+        -1&0&1\\
+        \\
+        0&0&4
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&1\\
+        -2&0&1\\
+        \\
+        1&0&4
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        in this case, $w_2$ is added for visual aiding, now the cosine wave is shifted to the right.<br><br>
+        now we can try to let the final vector $v_t$ move in the y-direction as well by adding $w_3$ and $w_4$.
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1&0&1\\
+        -1&0&1\\
+        \\
+        0&0&4\\
+        \\
+        1&0&1\\
+        -1&180&1
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1&0&1\\
+        -2&0&1\\
+        \\
+        1&0&4\\
+        \\
+        1&0&1\\
+        -2&180&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        here you can see that along the y-direction, $v_t$ is tracing a sine wave. And with this whole setup, we are now tracing a circle, but shifted to the right, of course we can shrink $A_2$ to be $0$ and the pattern will be centered, but for now, let's leave it as it is.<br><br>
+
+        let's call $w_0 + w_1$ Oscillator-X and $w_3+w_4$ Oscillator-Y. In this case, we can let Oscillator-X and Oscillator-Y oscillate at a different rate my multiplying some coefficients to its frequency :
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1X&0&1\\
+        -1X&0&1\\
+        \\
+        0&0&D\\
+        \\
+        1Y&0&1\\
+        -1Y&180&1
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1X&0&1\\
+        -2X&0&1\\
+        \\
+        1X&0&D\\
+        \\
+        1Y&0&1\\
+        -2Y&180&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        and offcourse we can offset the phase of Oscilator-Y as well
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        1X&0&1\\
+        -1X&0&1\\
+        \\
+        0&0&D\\
+        \\
+        1Y&\phi&1\\
+        -1Y&180-\phi&1
+        \end{pmatrix}^{fowo\_WSpace}
+        =
+        \begin{pmatrix}
+        1X&0&1\\
+        -2X&0&1\\
+        \\
+        1X&0&D\\
+        \\
+        1Y&\phi&1\\
+        -2Y&180-2\phi&1
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        if you are too lazy to do some brain arithmetic yourself, we can extend some dots (refer to section 3.4)
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        X&0&1\\
+        -2X&0&1\\
+        \\
+        X&0&D\\
+        \\
+        Y&\phi&1\\
+        -2Y&180-2\phi&1
+        \end{pmatrix}^{fowo\_LSpace}
+        =
+        \begin{pmatrix}
+        X&0&1\\
+        -X&0&0\\
+        -X&0&1\\
+        \\
+        X&0&D\\
+        \\
+        Y&\phi&1\\
+        -Y&180&0\\
+        -Y&-2\phi&1
+        \end{pmatrix}^{fowo\_LSpace}
+        =
+        \begin{pmatrix}
+        X&0&1\\
+        -X&0&0\\
+        -X&0&1\\
+        \\
+        X&0&D\\
+        \\
+        Y&\phi&1\\
+        -Y&180&0\\
+        0&-\phi&0\\
+        -Y&-\phi&1\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        at this point we can also control the amplitude for both Oscillator-X and Oscillator-Y
+
+        <br><br>
+        $$
+        \begin{pmatrix}
+        X&0&W\\
+        -2X&0&W\\
+        \\
+        X&0&D\\
+        \\
+        Y&\phi&H\\
+        -2Y&180-2\phi&H
+        \end{pmatrix}^{fowo\_LSpace}
+        =
+        \begin{pmatrix}
+        X&0&W\\
+        -X&0&0\\
+        -X&0&W\\
+        \\
+        X&0&D\\
+        \\
+        Y&\phi&H\\
+        -Y&180&0\\
+        0&-\phi&0\\
+        -Y&-\phi&H\\
+        \end{pmatrix}^{fowo\_LSpace}
+        $$
+        <br><br>
+
+        so here's a quick reminder that
+        <ul>
+        <li>X : Horizontal frequency</li>
+        <li>Y : Vertical frequency</li>
+        <li>W : Horizontal Radius</li>
+        <li>H : Vertical radius</li>
+        <li>$\phi$ : Vertical phase offset</li>
+        </ul>
+
+    <div class="Gap_75"></div>
+
+<div class="Gap_100"></div>
+
+<h1>🟡 Z - Conclusion</h1>
+
+    if you spent your time reading this entire thing, Thanks for reading, fourier series is one of the reasons why Maths is beautiful but many people scatter when they hear math. perhaps the educational system need to grow and evolve. If you are a educator and find this article helpful, feel free to use this under fair use.<br><br>
+
+    Any way, onece again, thanks for you time, have fun exploring patterns. <i>(psst, if you found any patterns, let us know, Twitter/X : @M2007U_V2021 , Bluesky : @memo2007ultra.bsky.social , Instagram : @memo2007ultra)</i><br><br>
+
+    XR_XharpRazor,<br>
+    <i>Crazy Computer Science Student and a Lunatic Creator.</i>
+
+    <img src="XRKon_FOwOrierSewies.png" style="display:block; margin:20px auto;" width="840">
+
+<div class="Gap_100"></div>
+
+
+
+
+
+
+<script>
+class dOwOc_callout extends HTMLElement
+{
+    constructor() {
+        super();
+
+        // Attach shadow DOM
+        const shadow = this.attachShadow({ mode: 'open' });
+
+        //get attributes
+        const attb_color = this.getAttribute("color-all") || "255,192,0";
+
+        // Create wrapper div
+        const wrapper = document.createElement('div');
+        wrapper.style.backgroundColor = "rgba(" + attb_color + ",0.25)";
+        wrapper.style.padding = '35px';
+        wrapper.style.margin = '35px';
+        wrapper.style.borderRadius = '16px';
+
+        // get title
+        const title_html = document.createElement('div');
+        title_html.style.fontSize = "20px";
+        title_html.style.marginBottom = "16px";
+        title_html.style.color = "rgba(" + attb_color + ",1)";
+        title_html.innerText = this.getAttribute("title") || "title goes here";
+        
+        wrapper.appendChild(title_html);
+        
+        // Use a <slot> to allow user content
+        const slot = document.createElement('slot'); 
+        wrapper.appendChild(slot);
+
+        shadow.appendChild(wrapper);
+    }
+}
+customElements.define('dowoc-call',dOwOc_callout);
+
+</script>
+
+</body>
+</html>
