@@ -7,11 +7,11 @@
     <title>FOwOrier Sewies</title>
     <link rel="stylesheet" href="styles.css" >
 </head>
-<body  style="font-family:Calibri, Consolas, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;background-color: black;">
+<body id="MainBODY" style="font-family:Calibri, Consolas, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;">
 <div class="centerRow" style="z-index:1;height:1080px">
             <canvas id="kanvas" width="1920" height="1080"></canvas>
 </div>
-<div class="centerRow" style="z-index: 0; height:750px">
+<div class="centerRow" style="z-index:0;height:1000px">
     <div style="height:550px"><!-- the column that contains the settings page buttons -->
         <div class="button_long" onClick="POwO_Config_ShowHide('settingsBox_Harmonics')">
             Harmonics
@@ -29,6 +29,8 @@
     <div class="collapseBox" id="settingsBox_Harmonics">
         <b style="color:White;font-size:24px">Harmonic Configs</b><br><br>
         <textarea type="text" id="field_harmonics" style="height:350px;width:350px" ></textarea>
+        <br>
+        <br>
         <div class="button_long" onClick="POwO_Config_Harmonics()">
             config
         </div>
@@ -39,14 +41,22 @@
         space scale : <input id="field_spaceScale" value="64"><br>
         tracer sample interval : <input id="field_tracerSampleInterval" value="2">
         <br>
+        <br>
         tracer Node trail Index : <input id="field_trailNodeIndex" value="128"><br>
         tracer Node trail length : <input id="field_trailNodeLength" value="3000"><br>
-        <br>
         tracer Node trailX length : <input id="field_trailNodeX_length" value="128"><br>
         tracer Node trailY length : <input id="field_trailNodeY_length" value="128"><br>
         <br>
+        <br>
         tracer Wipe trail Index :<input id="field_trailWipeIndex" value="3,2"><br>
         tracer Wipe trail length :<input id="field_trailWipeLength" value="100"><br>
+        <br>
+        <br>
+        grid X size : <input id="field_gridX_size" value="1"><br>
+        grid X Interval : <input id="field_gridX_interval" value="4"><br>
+        grid Y size : <input id="field_gridY_size" value="1"><br>
+        grid Y Interval : <input id="field_gridY_interval" value="4"><br>
+        <br>
         <br>
         <div class="button_long" onClick="POwO_Config_Misc()">
             config
@@ -61,34 +71,72 @@
         trailW Yspeed : <input id="field_trailNodeW_Yspeed" value="0"><br>
         trailW Rotation : <input id="field_trailNodeW_Rotation" value="0"><br>
         trailW Zoom : <input id="field_trailNodeW_Zoom" value="0"><br>
+        <br>
+        <br>
         <div class="button_long" onClick="POwO_Config_Physics()">
             config
         </div>
     </div>
     <div class="collapseBox" id="settingsBox_Visuals">
-        <b style="color:White;font-size:24px">Visual Configs</b><br><br>
-        node radius : <input id="field_visual_node_radius" value="8"><br>
-        node color : <input id="field_visual_node_color" value="255,192,0,1" style="width:100px"><br>
-        arm color : <input id="field_visual_arm_color" value="255,192,0,1" style="width:100px"><br>
-        arm thickness : <input id="field_visual_arm_thickness" value="5"><br>
-        <br>
-        tracer Node node color : <input id="field_visual_tracer_color" value="255,0,0,1" style="width:100px"><br>
-        tracer Node trail color gradient :<textarea type="text" id="field_visual_trailNode_color">255,255,255,1,0
+
+        <div> <!-- top part -->
+            <b style="color:White;font-size:24px">Visual Configs</b>
+        </div>
+        <div class="centerRow" > <!-- middle part -->
+
+            <div><!-- left side -->
+                <br><br>
+                node radius : <input id="field_visual_node_radius" value="8"><br>
+                node color : <input id="field_visual_node_color" value="255,192,0,1" style="width:100px"><br>
+                arm color : <input id="field_visual_arm_color" value="255,192,0,1" style="width:100px"><br>
+                arm thickness : <input id="field_visual_arm_thickness" value="5"><br>
+                <br>
+                <br>
+                tracer Node node color : <input id="field_visual_tracer_color" value="255,0,0,1" style="width:100px"><br>
+                tracer Node trail color gradient :<textarea type="text" id="field_visual_trailNode_color">255,255,255,1,0
 255,255,255,1,1</textarea><br>
-        tracer Node trail thickness : <input id="field_visual_trailNode_thickness" value="5"><br>
-        <br>
-        trailX thickness : <input id="field_visual_trailNodeX_thickness" value="0"><br>
-        trailY thickness : <input id="field_visual_trailNodeY_thickness" value="0"><br> 
-        <br>
-        tracer Wipe trail color gradient :
-        <textarea type="text" id="field_visual_trailWipe_color">255,192,0,1
+                tracer Node trail thickness : <input id="field_visual_trailNode_thickness" value="5"><br>
+                <br>
+                <br>
+                trailX thickness : <input id="field_visual_trailNodeX_thickness" value="0"><br>
+                trailY thickness : <input id="field_visual_trailNodeY_thickness" value="0"><br> 
+                <br>
+                <br>
+                tracer Wipe trail color gradient :
+                <textarea type="text" id="field_visual_trailWipe_color">255,192,0,1
 255,192,0,1</textarea><br>
-        tracer Wipe trail thickness :  <input id="field_visual_trailWipe_thickness" value="0"><br>
-        <br>
-        <text style="color:#808080"><i>Note : to turn off a line, set it's thickness to 0</i></text><br>
-        <br>
-        <div class="button_long" onClick="POwO_Config_Visuals()">
-            config
+                tracer Wipe trail thickness :  <input id="field_visual_trailWipe_thickness" value="0"><br>
+                <br>
+            </div>
+            <div style="background-color:white;width:1px; height:600px ;margin:50px;" ></div>
+            <div> <!-- right side -->
+                <br>
+                grid X small color : <input id="field_visual_gridX_small_color" value="255,255,255,0.25" style="width:100px"><br>
+                grix X large color : <input id="field_visual_gridX_large_color" value="255,255,255,1" style="width:100px"><br>
+                grid X major color : <input id="field_visual_gridX_major_color" value="255,0,0,1" style="width:100px"><br>
+                grid X small thickness : <input id="field_visual_gridX_small_thickness" value="1"><br>
+                grid X large thickness : <input id="field_visual_gridX_large_thickness" value="2"><br>
+                grid X major thickness : <input id="field_visual_gridX_major_thickness" value="3"><br>
+                <br>
+                grid Y small color : <input id="field_visual_gridY_small_color" value="255,255,255,0.25" style="width:100px"><br>
+                grid Y large color : <input id="field_visual_gridY_large_color" value="255,255,255,1" style="width:100px"><br>
+                grid Y major color : <input id="field_visual_gridY_major_color" value="0,255,0,1" style="width:100px"><br>
+                grid Y small thickness : <input id="field_visual_gridY_small_thickness" value="1"><br>
+                grid Y large thickness : <input id="field_visual_gridY_large_thickness" value="2"><br>
+                grid Y major thickness : <input id="field_visual_gridY_major_thickness" value="3"><br>
+                <br>
+                <br>
+                background color : <input id="field_visual_background_color" value="0,0,0,0" style="width:100px"><br>
+                <br>
+            </div>
+        </div>
+        <div> <!-- bottom part -->
+            <br>
+            <text style="color:#808080"><i>Note : to turn off a line, set it's thickness to 0</i></text><br>
+            <br>
+            <div class="button_long" onClick="POwO_Config_Visuals()">
+                config
+            </div>
         </div>
     </div>
 </div>

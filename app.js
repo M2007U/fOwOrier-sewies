@@ -314,7 +314,92 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
     let cx = Kanvas.width / 2;
     let cy = Kanvas.height / 2;
 
-    //draw lines / arms
+    //draw grid
+    //known dimensions = canvasWidth x canvasHeight = 1920 x 1080
+    //distance between grid in pixels = spaceScale * userGivenLength
+
+    //draw gridX
+    let temp_tick_gridXcounter = 0;
+    for(let i = cx ; i < Kanvas.width ; i += (spaceScale * gridXsize) )
+    {
+        //WARNING : i over here is not index, instead, it is current coordX
+        let temp_doublesided = false;
+        if (i === cx)
+        {
+            //this is the major tick
+            KanvasContext.lineWidth = visual_gridY_major_thickness;
+            KanvasContext.strokeStyle = visual_gridY_major_color;
+        }
+        else if ( temp_tick_gridXcounter % gridXInterval === 0 )
+        {
+            //this is a large tick
+            KanvasContext.lineWidth = visual_gridX_large_thickness;
+            KanvasContext.strokeStyle = visual_gridX_large_color;
+            temp_doublesided = true
+        }
+        else
+        {
+            //this is a small tick
+            KanvasContext.lineWidth = visual_gridX_small_thickness;
+            KanvasContext.strokeStyle = visual_gridX_small_color;
+            temp_doublesided = true
+        }
+        KanvasContext.beginPath();
+        KanvasContext.moveTo( i , 0 ) ;
+        KanvasContext.lineTo( i , Kanvas.height );
+        KanvasContext.stroke();
+        if (temp_doublesided)
+        {
+            KanvasContext.beginPath();
+            KanvasContext.moveTo( cx - (i - cx) , 0 ) ;
+            KanvasContext.lineTo( cx - (i - cx) , Kanvas.height );
+            KanvasContext.stroke();
+        }
+        temp_tick_gridXcounter++;
+    }
+
+    //draw gridY
+    let temp_tick_gridYcounter = 0;
+    for(let i = cy ; i < Kanvas.height ; i += (spaceScale * gridYsize) )
+    {
+        //WARNING : i over here is not index, instead, it is current coordX
+        let temp_doublesided = false;
+        if (i === cy)
+        {
+            //this is the major tick
+            KanvasContext.lineWidth = visual_gridX_major_thickness;
+            KanvasContext.strokeStyle = visual_gridX_major_color;
+        }
+        else if ( temp_tick_gridYcounter % gridYInterval === 0 )
+        {
+            //this is a large tick
+            KanvasContext.lineWidth = visual_gridY_large_thickness;
+            KanvasContext.strokeStyle = visual_gridY_large_color;
+            temp_doublesided = true
+        }
+        else
+        {
+            //this is a small tick
+            KanvasContext.lineWidth = visual_gridY_small_thickness;
+            KanvasContext.strokeStyle = visual_gridY_small_color;
+            temp_doublesided = true
+        }
+        KanvasContext.beginPath();
+        KanvasContext.moveTo( 0 , i ) ;
+        KanvasContext.lineTo( Kanvas.width , i);
+        KanvasContext.stroke();
+        if (temp_doublesided)
+        {
+            KanvasContext.beginPath();
+            KanvasContext.moveTo( 0 , cy - (i - cy)) ;
+            KanvasContext.lineTo( Kanvas.width , cy - (i - cy));
+            KanvasContext.stroke();
+        }
+        temp_tick_gridYcounter++;
+    }
+    
+
+    //draw arms
     if (visual_arm_thickness > 0)
     {
         KanvasContext.beginPath();
@@ -325,15 +410,14 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
         }
         KanvasContext.lineTo(cx + lastNode[0], cy - lastNode[1])
         KanvasContext.lineWidth = visual_arm_thickness;
-        KanvasContext.strokeStyle = "rgba(" + visual_arm_color + ")"
+        KanvasContext.strokeStyle = visual_arm_color
         KanvasContext.stroke();
     }
     
-
     //prepare to draw nodes
     KanvasContext.lineWidth = 1;        // ring thickness
-    KanvasContext.strokeStyle = "rgba(" + visual_node_color + ")" 
-    KanvasContext.fillStyle = "rgba(" + visual_node_color + ")" //fill color
+    KanvasContext.strokeStyle = visual_node_color 
+    KanvasContext.fillStyle = visual_node_color //fill color
 
     //draw wiper nodes
     for(let i = 0 ; i < wipers.length ; i++)
@@ -358,11 +442,10 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
         cy - tracer[1] ,
         visual_node_radius, 0, Math.PI * 2
     );
-    KanvasContext.strokeStyle = "rgba(" + visual_tracer_color + ")" // ring color
-    KanvasContext.fillStyle = "rgba(" + visual_tracer_color + ")" //fill color
+    KanvasContext.strokeStyle = visual_tracer_color // ring color
+    KanvasContext.fillStyle = visual_tracer_color //fill color
     KanvasContext.stroke();
     KanvasContext.fill();
-
 
     //draw tracer trail
     if(visual_trailNode_thickness > 0)
@@ -398,8 +481,7 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
         }
     }
 
-    //draw tracer XYCoord Particle Trail
-    //for X
+    //draw Coord X trail
     if(visual_trailNodeX_thickness > 0)
     {
         KanvasContext.lineWidth = visual_trailNodeX_thickness;
@@ -413,7 +495,7 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
         KanvasContext.stroke();
     }
     
-    //for Y
+    //draw Coord Y trail
     if(visual_trailNodeY_thickness > 0)
     {
         KanvasContext.lineWidth = visual_trailNodeY_thickness;
@@ -477,28 +559,30 @@ function POwO_Config_Misc()
     tracerWipeTrail_size = POwO_docgetUsernum("field_trailWipeLength")
 
     POwO_TrailColorCalculateCache()
+
+    gridXsize = POwO_docgetUsernum("field_gridX_size")
+    gridXInterval = POwO_docgetUsernum("field_gridX_interval")
+    gridYsize = POwO_docgetUsernum("field_gridY_size")
+    gridYInterval = POwO_docgetUsernum("field_gridY_interval")
 }
 
 function POwO_Config_Visuals()
 {
     clearInterval(RUNGRAPH) //pause
 
-    visual_node_radius = POwO_docgetUsernum("field_visual_node_radius")
-    visual_node_color = POwO_docgetel("field_visual_node_color").value 
-    visual_arm_color = POwO_docgetel("field_visual_arm_color").value
-    visual_arm_thickness = POwO_docgetUsernum("field_visual_arm_thickness")
-    
-    visual_tracer_color = POwO_docgetel("field_visual_tracer_color").value
-    
-    POwO_TrailColorCalculateCache()
-    
-    
-    
-    visual_trailNode_thickness = POwO_docgetUsernum("field_visual_trailNode_thickness")
 
+    //main structure
+    visual_node_radius = POwO_docgetUsernum("field_visual_node_radius")
+    visual_node_color = "rgba(" + POwO_docgetel("field_visual_node_color").value + ")"
+    visual_arm_color = "rgba(" + POwO_docgetel("field_visual_arm_color").value + ")"
+    visual_arm_thickness = POwO_docgetUsernum("field_visual_arm_thickness")
+    visual_tracer_color = "rgba(" + POwO_docgetel("field_visual_tracer_color").value + ")"
+    
+    //trails
+    POwO_TrailColorCalculateCache()
+    visual_trailNode_thickness = POwO_docgetUsernum("field_visual_trailNode_thickness")
     visual_trailNodeX_thickness = POwO_docgetUsernum("field_visual_trailNodeX_thickness")
     visual_trailNodeY_thickness = POwO_docgetUsernum("field_visual_trailNodeY_thickness")
-
     visual_trailWipe_color = []
     let temp_trailWipe_color_parse1 = POwO_docgetel("field_visual_trailWipe_color").value.split('\n')
     for(let i = 0 ; i<temp_trailWipe_color_parse1.length ; i++)
@@ -511,8 +595,26 @@ function POwO_Config_Visuals()
             )
         )
     }
-
     visual_trailWipe_thickness = POwO_docgetUsernum("field_visual_trailWipe_thickness")
+
+    //grid
+    visual_gridX_small_color = "rgba(" + POwO_docgetel("field_visual_gridX_small_color").value + ")"
+    visual_gridX_large_color = "rgba(" + POwO_docgetel("field_visual_gridX_large_color").value + ")"
+    visual_gridX_major_color = "rgba(" + POwO_docgetel("field_visual_gridX_major_color").value + ")"
+
+    visual_gridX_small_thickness = POwO_docgetel("field_visual_gridX_small_thickness").value
+    visual_gridX_large_thickness = POwO_docgetel("field_visual_gridX_large_thickness").value
+    visual_gridX_major_thickness = POwO_docgetel("field_visual_gridX_major_thickness").value
+
+    visual_gridY_small_color = "rgba(" + POwO_docgetel("field_visual_gridY_small_color").value + ")"
+    visual_gridY_large_color = "rgba(" + POwO_docgetel("field_visual_gridY_large_color").value + ")"
+    visual_gridY_major_color = "rgba(" + POwO_docgetel("field_visual_gridY_major_color").value + ")"
+
+    visual_gridY_small_thickness = POwO_docgetel("field_visual_gridY_small_thickness").value
+    visual_gridY_large_thickness = POwO_docgetel("field_visual_gridY_large_thickness").value
+    visual_gridY_major_thickness = POwO_docgetel("field_visual_gridY_major_thickness").value
+
+    document.body.style.backgroundColor = "rgba(" + POwO_docgetel("field_visual_background_color").value + ")"
 
     console.log("trailNodeColor")
     console.log(visual_trailNode_color)
@@ -578,8 +680,12 @@ class wiper
     }
 }
 
+//scalling variables
+
 var timeScale = 0.005
 var spaceScale = 64
+
+//main body
 
 var wipers = [new wiper(22.5,0,1), new wiper(-360,0,2), new wiper(720,0,1), new wiper(360,0,0.5)]
 var lastNode = [0,0] //PosX PosY
@@ -601,17 +707,45 @@ var tracerWipeTrail = [] //an array of arrays which contains XY positions, would
 var tracerWipeTrail_size = 100
 var tracerWipeIndex = [3,2] //a list of ID of nodes to know how to "wipe" the nodes
 
+
+//grids
+
+var gridXsize = 1 //what is the length between gridlines (in terms of unit, not pixels)
+var gridXInterval = 4 //for every this amount of lines, one will be thicken
+var gridYsize = 1
+var gridYInterval = 4
+
+
+//visuals
+
 var visual_node_radius = 8
-var visual_node_color = [255,192,0,1]
-var visual_arm_color = [255,192,0,1]
+var visual_node_color = "255,192,0,1"
+var visual_arm_color = "255,192,0,1"
 var visual_arm_thickness = 5
-var visual_tracer_color = [255,0,0,1]
+var visual_tracer_color = "255,0,0,1"
+
 var visual_trailNode_color = [[255,255,255,1,0],[255,255,255,1,1]] //[r,g,b,a,colorStoppingPoint] and repeat
 var visual_trailNode_thickness = 5
 var visual_trailNodeX_thickness = 0
 var visual_trailNodeY_thickness = 0
+
 var visual_trailWipe_color = [[225,192,0,1],[255,192,0,0]] //[r,g,b,a] and repeat, CAUTION length must be the same as tracerWipeIndex
 var visual_trailWipe_thickness = 0
+
+var visual_gridX_small_color = "255,255,255,0.5"
+var visual_gridX_large_color = "255,255,255,1"
+var visual_gridX_major_color = "255,0,0,1"
+var visual_gridX_small_thickness = 1
+var visual_gridX_large_thickness = 1
+var visual_gridX_major_thickness = 2
+var visual_gridY_small_color = "255,255,255,0.5"
+var visual_gridY_large_color = "255,255,255,1"
+var visual_gridY_major_color = "0,255,0,1"
+var visual_gridY_small_thickness = 1
+var visual_gridY_large_thickness = 1
+var visual_gridY_major_thickness = 2
+
+
 
 var tracerNodeTrailX_speed = 4
 var tracerNodeTrailY_speed = 4

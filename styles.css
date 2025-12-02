@@ -111,13 +111,13 @@
 
 .settingsBox
 {
-    height:680px;
-    width:400px;
+    height:850px;
+    max-width:800px;
     overflow: hidden;
     white-space: nowrap;
 
     border-radius: 16px;
-    padding: 16px;
+    padding: 50px;
     margin:8px;
     
     font-size: 16px;
@@ -126,20 +126,20 @@
     color:white;
     background-color: rgba(192,192,192,0.1);
 
-    transition: width 1s ease, padding 1s ease, opacity 1s ease,background-color 1s ease; /* smooth animation */
+    transition: max-width 1s ease, padding 1s ease, opacity 1s ease,background-color 1s ease; /* smooth animation */
 }
 
 .collapseBox {
     color:white;
-    width: 0px;
-    height:680px;
+    max-width: 0px;
+    height:850px;
     border-radius: 16px;
     overflow: hidden;
     white-space: nowrap; 
     padding: 0px;
     margin:8px;
     background-color: rgba(192,192,192,0.0);
-    transition: width 1s ease, padding 1s ease, opacity 1s ease,background-color 1s ease; /* smooth animation */
+    transition: max-width 1s ease, padding 1s ease, opacity 1s ease,background-color 1s ease; /* smooth animation */
 }
 
 input {
