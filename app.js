@@ -1,0 +1,641 @@
+// ---- ---- ---- ---- FUNCTIONS
+
+//getElementbyID but shorter
+function POwO_docgetel(InString)
+{
+    let GetObject = document.getElementById(InString)
+    if (GetObject === null)
+    {
+        console.log("POwO_docgetel : got null : " + InString)
+    } 
+    return GetObject;
+}
+
+function POwO_docgetUsernum(InString)
+{
+    return Number(POwO_docgetel(InString).value)
+}
+
+function POwO_math_DegToRad(InDeg)
+{
+    return InDeg / 180 * Math.PI
+}
+
+function POwO_math_LERP(A,B,t)
+{
+    return (B-A)*t + A;
+}
+
+function POwO_ArrayToColorString(InArray)
+{
+    return "rgba(" + InArray[0] + "," + InArray[1] + "," + InArray[2] + "," + InArray[3] + ")"
+}
+
+function POwO_StringArrayToNumberArray(InArray)
+{
+    let OutArray = []
+
+    for(let i = 0 ; i < InArray.length ; i++)
+    {
+        OutArray.push(Number(InArray[i]))
+    }
+
+    return OutArray;
+}
+
+
+
+
+function POwO_UpdateWipers() //spin the wipers in the RAM memory
+{
+    /*
+    assume that we have the following wipers :
+    wipers = [ wiper0 , wiper1 , wiper2 , wiperN ]
+    
+    then this means that the whole structure may look something like this : 
+    [0]---- [1]---- [2]---- ... [N]---- [FinalNode]
+    where "[i]" is the Ith node and "----" is the amplitude
+    note : FinalNode do not have amplitude
+    */
+
+    /*
+    
+    let local freq be : F0, F1, F2, ..., Fn
+
+    then
+
+    direction after 1 unit of time should be :
+
+      F0 F1 F2 F3 ... Fn
+    --------------------
+      F0 F0 F0 F0 ... F0
+         F1 F1 F1 ... F1
+            F2 F2 ... F2
+               F3 ... F3
+                  ... ...
+    +                 Fn
+    --------------------
+      D0 D1 D2 D3 ... Dn
+    
+    */
+
+    for(let i = 0 ; i < wipers.length; i++)
+    {
+        for(let j = 0 ; j <= i ; j++)
+        {
+            wipers[i].currentDirection += ( wipers[j].configFreq ) * timeScale
+        }
+    }
+
+    //update wiper node position
+    wipers[0].currentPosX = 0;
+    wipers[0].currentPosY = 0;
+    for(let i = 1 ; i < wipers.length ; i++)
+    {
+        let Temp_ScaledRadius = wipers[i-1].configAmplitude * spaceScale
+        let Temp_CurrentDir = POwO_math_DegToRad(wipers[i-1].currentDirection)
+        wipers[i].currentPosX = wipers[i-1].currentPosX + Temp_ScaledRadius * Math.cos(Temp_CurrentDir )
+        wipers[i].currentPosY = wipers[i-1].currentPosY + Temp_ScaledRadius * Math.sin(Temp_CurrentDir )
+    }
+
+    //update lastNode position
+    let Temp_FinalWiper = wipers[wipers.length-1]
+    let Temp_FinalWiper_RadiusScaled = Temp_FinalWiper.configAmplitude * spaceScale
+    let Temp_FinalWiper_CurrentDirection = POwO_math_DegToRad(Temp_FinalWiper.currentDirection)
+    lastNode[0] = Temp_FinalWiper.currentPosX + Temp_FinalWiper_RadiusScaled * Math.cos( Temp_FinalWiper_CurrentDirection );
+    lastNode[1] = Temp_FinalWiper.currentPosY + Temp_FinalWiper_RadiusScaled * Math.sin( Temp_FinalWiper_CurrentDirection );
+
+    //update tracer position
+    if (tracerNodeIndex < wipers.length)
+    {
+        tracer[0] = wipers[tracerNodeIndex].currentPosX
+        tracer[1] = wipers[tracerNodeIndex].currentPosY
+    }
+    else
+    {
+        tracer[0] = lastNode[0]
+        tracer[1] = lastNode[1]
+    }
+
+}
+
+function POwO_TrailMainTain(InTrailArray, InTrailSize, InPopAttemptCount, InGetNewPosX, InGetNewPosY) //keep the trail length in range
+{
+    for(let i = 0 ; i < InPopAttemptCount ; i++)
+    {
+        if (InTrailArray.length > InTrailSize){InTrailArray.pop()}
+    }
+    InTrailArray.unshift( [InGetNewPosX , InGetNewPosY] )
+}
+
+function POwO_TrailColorCalculateCache() //precalculate the colors for each segment of the TracerNode Trail
+{
+    visual_trailNode_color = [] //will be [[R,G,B,A,S],[R,G,B,A,S]...[R,G,B,A,S]]
+    let temp_trailNode_color_parse1 = POwO_docgetel("field_visual_trailNode_color").value.split('\n')
+    tracerNodeTrailColorCache = []
+    for(let i = 0 ; i<temp_trailNode_color_parse1.length ; i++ )
+    {
+        visual_trailNode_color.push
+        (
+            POwO_StringArrayToNumberArray
+            (
+                temp_trailNode_color_parse1[i].split(',')
+            )
+        )
+    }
+    for(let i = 0 ; i < tracerNodeTrail_size ; i++)
+    {
+        /*
+        name declarations :
+        GCS = given Color Start (need to find)
+        GCE = given Color End (need to find)
+        i = current dealing particle
+        RC = request color
+
+        (0)--------------------------------------------(i)--------------------------------------------(trailLen)
+        (0)--------------------(GCS.t)-----------------------------------------(GCE.t)-----------------------(1)
+
+        scale ParticleTrail to a 0~1 scale
+
+        (0)----------------------------------------(i/trailLen)----------------------------------------------(1)
+        (0)--------------------(GCS.t)-----------------------------------------(GCE.t)-----------------------(1)
+
+        move everything to the left by GCS.t amount
+        mark segment from 0 to GCE.t-GCS.t, call it A
+
+        (0)--------------------((i/trailLen)-GCS.t)----------------------------------------------------------(1)
+        (0=GCS.t-GCS.t)-----------------------------------------(GCE.t-GCS.t)--------------------------------(1)
+        |----------------------------A--------------------------------------|
+
+        stretch A such that length of A is 1
+
+        (0)--------------------------------(((i/trailLen)-GCS.t)*weirdFactor)--------------------------------(1)
+        (0=(GCS.t-GCS.t)*weirdFactor)----------------------------------------------((GCE.t-GCS.t)*weirdFactor=1)
+        |------------------------------------------------A-----------------------------------------------------|
+
+        A * weirdFactor = 1
+        (GCE.t-GCS.t) * weirdFactor = 1
+        weirdFactor = 1/(GCE.t-GCS.t)
+
+        so final TValue to LERP between given colors :
+        ((i/trailLen)-GCS.t)*(1/(GCE.t-GCS.t))
+        = ((i/trailLen)-GCS.t)/(GCE.t-GCS.t)
+        */
+
+        let WholeTValue = i/(tracerNodeTrail_size-1)
+        let temp_indexPointer = visual_trailNode_color.length-1
+        let GCS = [];
+        let GCE = [];
+        while( WholeTValue < visual_trailNode_color[temp_indexPointer][4] && 0 < temp_indexPointer)
+        {
+            temp_indexPointer--
+        }
+        if (WholeTValue === visual_trailNode_color[temp_indexPointer][4])
+        {
+            GCS = visual_trailNode_color[temp_indexPointer]
+            GCE = visual_trailNode_color[temp_indexPointer]
+        }
+        else
+        {
+            GCS = visual_trailNode_color[temp_indexPointer]
+            GCE = visual_trailNode_color[temp_indexPointer+1]
+        }
+
+        let ColorTValue = (i/tracerNodeTrail_size - GCS[4]) / ( GCE[4] - GCS[4] )
+        if (isNaN(ColorTValue)){ColorTValue = 0.5}
+        tracerNodeTrailColorCache.push
+        (
+            "rgba(" +
+            POwO_math_LERP(GCS[0],GCE[0],ColorTValue).toString() + "," +
+            POwO_math_LERP(GCS[1],GCE[1],ColorTValue).toString() +"," +
+            POwO_math_LERP(GCS[2],GCE[2],ColorTValue).toString() +"," +
+            POwO_math_LERP(GCS[3],GCE[3],ColorTValue).toString() + ")"
+        )
+    }
+}
+
+function POwO_trailNodeGenerate() //applying physics effects on the TracerNode Trail, Coordinate Trails, and the WipeTrail
+{
+    //update white trail particles positions based on physics
+    POwO_TrailMainTain(tracerNodeTrail, tracerNodeTrail_size, 2, tracer[0], tracer[1])
+    for(let i = 0 ; i < tracerNodeTrail.length ; i++)
+    {
+        //shift X and Y
+        tracerNodeTrail[i][0] += tracerNodeTrailW_Xspeed * spaceScale * timeScale * tracerSampleInterval
+        tracerNodeTrail[i][1] += tracerNodeTrailW_Yspeed * spaceScale * timeScale * tracerSampleInterval
+
+        //rotate
+        let temp_rot_angle = Math.atan2(tracerNodeTrail[i][1], tracerNodeTrail[i][0])
+        let temp_rot_radius = Math.sqrt(Math.pow(tracerNodeTrail[i][0],2) + Math.pow(tracerNodeTrail[i][1],2))
+        temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale * tracerSampleInterval
+        tracerNodeTrail[i] = [ Math.cos(temp_rot_angle) * temp_rot_radius , Math.sin(temp_rot_angle) * temp_rot_radius ]
+
+        //zoom
+        let temp_zom_angle = Math.atan2(tracerNodeTrail[i][1], tracerNodeTrail[i][0])
+        tracerNodeTrail[i][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+        tracerNodeTrail[i][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+    }
+
+
+    //update tracerXY coord Particles
+    POwO_TrailMainTain(tracerNodeTrailX, tracerNodeTrailX_size, 2, tracer[0], 0)
+    POwO_TrailMainTain(tracerNodeTrailY, tracerNodeTrailY_size, 2, 0, tracer[1])
+    for(let i = 0 ; i < tracerNodeTrailX.length ; i++)
+    {
+        //change Y coord
+        tracerNodeTrailX[i][1] -= tracerNodeTrailX_speed * spaceScale * timeScale * tracerSampleInterval
+    }
+    for(let i = 0 ; i < tracerNodeTrailY.length ; i++)
+    {
+        //change X coord
+        tracerNodeTrailY[i][0] -= tracerNodeTrailY_speed * spaceScale * timeScale * tracerSampleInterval
+    }
+
+    //update wipetrails
+    if (tracerWipeTrail.length > tracerWipeTrail_size){tracerWipeTrail.pop()}
+    if (tracerWipeTrail.length > tracerWipeTrail_size){tracerWipeTrail.pop()}
+    let NewWipePosArray = [] //will become [ [X,Y] , [X,Y] , ... , [X,Y] ]
+    for(let i = 0 ; i < tracerWipeIndex.length ; i++) //forevery requested index Node to become a WipeLine
+    {
+        if (tracerWipeIndex[i] >= wipers.length) //outside of harmonic range
+        {
+            NewWipePosArray.push([lastNode[0] , lastNode[1]]) //force to be the last one
+        }
+        else
+        {
+            let currentWiper = wipers[tracerWipeIndex[i]]
+            NewWipePosArray.push( [ currentWiper.currentPosX , currentWiper.currentPosY ] )
+        }
+    }
+    tracerWipeTrail.unshift( NewWipePosArray )
+    for(let i = 0 ; i < tracerWipeTrail.length ; i++) //for every wipeLine
+    {
+        for(let j = 0 ; j < tracerWipeTrail[i].length ; j++) //for every XYPos
+        {
+            //shift X and Y
+            tracerWipeTrail[i][j][0] += tracerNodeTrailW_Xspeed * spaceScale * timeScale * tracerSampleInterval
+            tracerWipeTrail[i][j][1] += tracerNodeTrailW_Yspeed * spaceScale * timeScale * tracerSampleInterval
+
+            //rotate
+            let temp_rot_angle = Math.atan2(tracerWipeTrail[i][j][1], tracerWipeTrail[i][j][0])
+            let temp_rot_radius = Math.sqrt(Math.pow(tracerWipeTrail[i][j][0],2) + Math.pow(tracerWipeTrail[i][j][1],2))
+            temp_rot_angle += POwO_math_DegToRad(tracerNodeTrailW_Rotation) * timeScale * tracerSampleInterval
+            tracerWipeTrail[i][j] = [ Math.cos(temp_rot_angle) * temp_rot_radius , Math.sin(temp_rot_angle) * temp_rot_radius ]
+
+
+            //zoom
+            let temp_zom_angle = Math.atan2(tracerWipeTrail[i][j][1], tracerWipeTrail[i][j][0])
+            tracerWipeTrail[i][j][0] += Math.cos(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+            tracerWipeTrail[i][j][1] += Math.sin(temp_zom_angle) * tracerNodeTrailW_Zoom * spaceScale * timeScale * tracerSampleInterval
+        }
+    }
+}
+
+function POwO_drawCanvas_drawGradient(InCtx, InX0, InY0, InX1, InY1, InC0, InC1) {
+    let gradient = InCtx.createLinearGradient(InX0, InY0, InX1, InY1);
+    gradient.addColorStop(0, InC0);
+    gradient.addColorStop(1, InC1);
+
+    InCtx.beginPath();
+    InCtx.moveTo(InX0, InY0);
+    InCtx.lineTo(InX1, InY1);
+    InCtx.strokeStyle = gradient;
+    InCtx.stroke();
+}
+
+function POwO_drawCanvas() //draw everything, wipers, trails, etc
+{
+    //clear canvas
+    let Kanvas = POwO_docgetel("kanvas");
+    let KanvasContext = Kanvas.getContext("2d");
+    KanvasContext.clearRect(0, 0, Kanvas.width, Kanvas.height)
+
+    //define center
+    let cx = Kanvas.width / 2;
+    let cy = Kanvas.height / 2;
+
+    //draw lines / arms
+    if (visual_arm_thickness > 0)
+    {
+        KanvasContext.beginPath();
+        KanvasContext.moveTo(cx, cy);
+        for(let i = 1 ; i < wipers.length; i++)
+        {
+            KanvasContext.lineTo(cx + wipers[i].currentPosX, cy - wipers[i].currentPosY);
+        }
+        KanvasContext.lineTo(cx + lastNode[0], cy - lastNode[1])
+        KanvasContext.lineWidth = visual_arm_thickness;
+        KanvasContext.strokeStyle = "rgba(" + visual_arm_color + ")"
+        KanvasContext.stroke();
+    }
+    
+
+    //prepare to draw nodes
+    KanvasContext.lineWidth = 1;        // ring thickness
+    KanvasContext.strokeStyle = "rgba(" + visual_node_color + ")" 
+    KanvasContext.fillStyle = "rgba(" + visual_node_color + ")" //fill color
+
+    //draw wiper nodes
+    for(let i = 0 ; i < wipers.length ; i++)
+    {
+        KanvasContext.beginPath();
+        KanvasContext.arc(cx + wipers[i].currentPosX, cy - wipers[i].currentPosY, visual_node_radius, 0, Math.PI * 2);
+        KanvasContext.stroke();
+        KanvasContext.fill();
+    }
+
+    //draw last appended node, which it at the tip of the last wiper
+    KanvasContext.beginPath();
+    KanvasContext.arc(cx + lastNode[0], cy - lastNode[1], visual_node_radius, 0, Math.PI * 2);
+    KanvasContext.stroke();
+    KanvasContext.fill();
+
+    //draw tracer node
+    KanvasContext.beginPath();
+    KanvasContext.arc
+    (
+        cx + tracer[0] ,
+        cy - tracer[1] ,
+        visual_node_radius, 0, Math.PI * 2
+    );
+    KanvasContext.strokeStyle = "rgba(" + visual_tracer_color + ")" // ring color
+    KanvasContext.fillStyle = "rgba(" + visual_tracer_color + ")" //fill color
+    KanvasContext.stroke();
+    KanvasContext.fill();
+
+
+    //draw tracer trail
+    if(visual_trailNode_thickness > 0)
+    {
+        KanvasContext.lineWidth = visual_trailNode_thickness;
+        let tracerNodeTrailLenMinusOne = tracerNodeTrail.length - 2
+        for(let i = 0 ; i < tracerNodeTrailLenMinusOne ; i++) //draw every segments
+        {
+            KanvasContext.beginPath();
+            KanvasContext.moveTo(cx + tracerNodeTrail[i][0], cy - tracerNodeTrail[i][1])
+            KanvasContext.lineTo(cx + tracerNodeTrail[i+1][0], cy - tracerNodeTrail[i+1][1])
+            KanvasContext.strokeStyle = tracerNodeTrailColorCache[i];
+            KanvasContext.stroke();
+        }
+
+    }
+
+    //draw wipe trails
+    // visual_trailWipe_color = [[RGBA]]
+    if (visual_trailWipe_thickness > 0)
+    {
+        KanvasContext.lineWidth = visual_trailWipe_thickness;
+        for(let j = 0 ; j < tracerWipeTrail.length ; j++)//for every wipe
+        {
+            for(let i = 0 ; i < tracerWipeIndex.length-1 ; i++)//for every segment
+            {
+                KanvasContext.beginPath();
+                KanvasContext.moveTo(cx + tracerWipeTrail[j][i][0],cy - tracerWipeTrail[j][i][1]);
+                KanvasContext.lineTo(cx + tracerWipeTrail[j][i+1][0], cy - tracerWipeTrail[j][i+1][1]);
+                KanvasContext.strokeStyle = POwO_ArrayToColorString(visual_trailWipe_color[ i ])
+                KanvasContext.stroke();
+            }
+        }
+    }
+
+    //draw tracer XYCoord Particle Trail
+    //for X
+    if(visual_trailNodeX_thickness > 0)
+    {
+        KanvasContext.lineWidth = visual_trailNodeX_thickness;
+        KanvasContext.strokeStyle = "rgba(255,0,0,1)";
+        KanvasContext.beginPath();
+        KanvasContext.moveTo(cx + tracerNodeTrailX[0][0] , cy - tracerNodeTrailX[0][1]);
+        for(let i = 1 ; i < tracerNodeTrailX.length; i++)
+        {
+            KanvasContext.lineTo(cx + tracerNodeTrailX[i][0], cy - tracerNodeTrailX[i][1]);
+        }
+        KanvasContext.stroke();
+    }
+    
+    //for Y
+    if(visual_trailNodeY_thickness > 0)
+    {
+        KanvasContext.lineWidth = visual_trailNodeY_thickness;
+        KanvasContext.strokeStyle = "rgba(0,255,0,1)";
+        KanvasContext.beginPath();
+        KanvasContext.moveTo(cx + tracerNodeTrailY[0][0] , cy - tracerNodeTrailY[0][1]);
+        for(let i = 1 ; i < tracerNodeTrailY.length; i++)
+        {
+            KanvasContext.lineTo(cx + tracerNodeTrailY[i][0], cy - tracerNodeTrailY[i][1]);
+        }
+        KanvasContext.stroke();
+    }
+}
+
+
+
+function POwO_Config_Harmonics()
+{
+    clearInterval(RUNGRAPH) //pause
+    let TextArea = POwO_docgetel("field_harmonics")
+    let TextWipers = TextArea.value.split(/\r\n|\r|\n/).filter(l => l.trim() !== "")
+    wipers = []
+    for(let i = 0 ; i < TextWipers.length ; i++)//generate wipers
+    {
+        console.log(i)
+        let WiperConfigArray = TextWipers[i].split(',')
+        wipers.push(new wiper(Number(WiperConfigArray[0]),Number(WiperConfigArray[1]),Number(WiperConfigArray[2])))
+    }
+
+    //configure initial phase
+    //refer to update wipers
+    for(let i = 0 ; i < wipers.length; i++)
+    {
+        wipers[i].currentDirection = 0
+        for(let j = 0 ; j <= i ; j++)
+        {
+            wipers[i].currentDirection += wipers[j].configPhase 
+        }
+    }
+
+    console.log(wipers)
+
+    //resume
+    RUNGRAPH = setInterval(POwO_RUNGRAPH,1)
+}
+
+function POwO_Config_Misc()
+{
+    timeScale = POwO_docgetUsernum("field_timeScale")
+    spaceScale = POwO_docgetUsernum("field_spaceScale")
+    tracerSampleInterval = POwO_docgetUsernum("field_tracerSampleInterval")
+
+    tracerNodeIndex = POwO_docgetUsernum("field_trailNodeIndex")
+    tracerNodeTrail_size = POwO_docgetUsernum("field_trailNodeLength")
+    tracerNodeTrailX_size = POwO_docgetUsernum("field_trailNodeX_length")
+    tracerNodeTrailY_size = POwO_docgetUsernum("field_trailNodeY_length")
+
+    tracerWipeTrail = []
+    tracerWipeIndex = POwO_docgetel("field_trailWipeIndex").value.split(',')
+    for(let i = 0 ; i < tracerWipeIndex.length ; i++){ tracerWipeIndex[i] = Number(tracerWipeIndex[i]) }
+    tracerWipeTrail_size = POwO_docgetUsernum("field_trailWipeLength")
+
+    POwO_TrailColorCalculateCache()
+}
+
+function POwO_Config_Visuals()
+{
+    clearInterval(RUNGRAPH) //pause
+
+    visual_node_radius = POwO_docgetUsernum("field_visual_node_radius")
+    visual_node_color = POwO_docgetel("field_visual_node_color").value 
+    visual_arm_color = POwO_docgetel("field_visual_arm_color").value
+    visual_arm_thickness = POwO_docgetUsernum("field_visual_arm_thickness")
+    
+    visual_tracer_color = POwO_docgetel("field_visual_tracer_color").value
+    
+    POwO_TrailColorCalculateCache()
+    
+    
+    
+    visual_trailNode_thickness = POwO_docgetUsernum("field_visual_trailNode_thickness")
+
+    visual_trailNodeX_thickness = POwO_docgetUsernum("field_visual_trailNodeX_thickness")
+    visual_trailNodeY_thickness = POwO_docgetUsernum("field_visual_trailNodeY_thickness")
+
+    visual_trailWipe_color = []
+    let temp_trailWipe_color_parse1 = POwO_docgetel("field_visual_trailWipe_color").value.split('\n')
+    for(let i = 0 ; i<temp_trailWipe_color_parse1.length ; i++)
+    {
+        visual_trailWipe_color.push
+        (
+            POwO_StringArrayToNumberArray
+            (
+                temp_trailWipe_color_parse1[i].split(',') 
+            )
+        )
+    }
+
+    visual_trailWipe_thickness = POwO_docgetUsernum("field_visual_trailWipe_thickness")
+
+    console.log("trailNodeColor")
+    console.log(visual_trailNode_color)
+    console.log("trailWipeColor")
+    console.log(visual_trailWipe_color)
+    console.log("trailNodeLength")
+    console.log(tracerNodeTrail.length)
+    console.log("trailNodeColorCache")
+    console.log(tracerNodeTrailColorCache)
+
+    //resume
+    RUNGRAPH = setInterval(POwO_RUNGRAPH,1)
+}
+
+function POwO_Config_Physics()
+{
+    tracerNodeTrailX_speed = POwO_docgetUsernum("field_trailNodeX_speed")
+    tracerNodeTrailY_speed = POwO_docgetUsernum("field_trailNodeY_speed")
+    tracerNodeTrailW_Xspeed = POwO_docgetUsernum("field_trailNodeW_Xspeed")
+    tracerNodeTrailW_Yspeed = POwO_docgetUsernum("field_trailNodeW_Yspeed")
+    tracerNodeTrailW_Rotation = POwO_docgetUsernum("field_trailNodeW_Rotation")
+    tracerNodeTrailW_Zoom = POwO_docgetUsernum("field_trailNodeW_Zoom")
+}
+
+
+
+function POwO_Config_ShowHide(InName)
+{
+    let SetBox_Har = POwO_docgetel("settingsBox_Harmonics")
+    let SetBox_Msc = POwO_docgetel("settingsBox_Misc")
+    let SetBox_Phy = POwO_docgetel("settingsBox_Physics")
+    let SetBox_Vsl = POwO_docgetel("settingsBox_Visuals")
+
+    SetBox_Har.classList.remove("settingsBox")
+    SetBox_Msc.classList.remove("settingsBox")
+    SetBox_Phy.classList.remove("settingsBox")
+    SetBox_Vsl.classList.remove("settingsBox")
+
+    SetBox_Har.classList.add("collapseBox")
+    SetBox_Msc.classList.add("collapseBox")
+    SetBox_Phy.classList.add("collapseBox")
+    SetBox_Vsl.classList.add("collapseBox")
+
+    let SetBox_Open = POwO_docgetel(InName)
+    SetBox_Open.classList.remove("collapseBox")
+    SetBox_Open.classList.add("settingsBox")
+}
+
+
+
+
+// ---- ---- ---- ---- VARS
+
+class wiper
+{
+    constructor(InConfigFreq, InConfigPhase, InConfigAmplitude) {
+        this.configFreq = InConfigFreq;
+        this.configPhase = InConfigPhase;
+        this.configAmplitude = InConfigAmplitude;
+        this.currentDirection = this.configPhase;
+        this.currentPosX = 0;
+        this.currentPosY = 0;
+    }
+}
+
+var timeScale = 0.005
+var spaceScale = 64
+
+var wipers = [new wiper(22.5,0,1), new wiper(-360,0,2), new wiper(720,0,1), new wiper(360,0,0.5)]
+var lastNode = [0,0] //PosX PosY
+var tracer = [0,0] //PosX and PosY
+var tracerSampleInterval = 2; //for every this amount of spiinning iteration, then put the position in the trail arrays
+var tracerSampleTime = 0;
+
+var tracerNodeIndex = 3; //which node to keep track off
+var tracerNodeTrail = [] //an array of [PosX,PosY]s
+var tracerNodeTrailColorCache = [] //an array of ["RGBA"]s
+var tracerNodeTrail_size = 3000 //how long the trail should be
+
+var tracerNodeTrailX = [] //an array of XY positions
+var tracerNodeTrailX_size = 128
+var tracerNodeTrailY = [] //an array of XY positions
+var tracerNodeTrailY_size = 128
+
+var tracerWipeTrail = [] //an array of arrays which contains XY positions, would be something like [ [ [X,Y] , [X,Y] ... [X,Y] ] , [ [X,Y] , [X,Y] ... [X,Y] ] ... [ [X,Y] , [X,Y] ... [X,Y] ] ]
+var tracerWipeTrail_size = 100
+var tracerWipeIndex = [3,2] //a list of ID of nodes to know how to "wipe" the nodes
+
+var visual_node_radius = 8
+var visual_node_color = [255,192,0,1]
+var visual_arm_color = [255,192,0,1]
+var visual_arm_thickness = 5
+var visual_tracer_color = [255,0,0,1]
+var visual_trailNode_color = [[255,255,255,1,0],[255,255,255,1,1]] //[r,g,b,a,colorStoppingPoint] and repeat
+var visual_trailNode_thickness = 5
+var visual_trailNodeX_thickness = 0
+var visual_trailNodeY_thickness = 0
+var visual_trailWipe_color = [[225,192,0,1],[255,192,0,0]] //[r,g,b,a] and repeat, CAUTION length must be the same as tracerWipeIndex
+var visual_trailWipe_thickness = 0
+
+var tracerNodeTrailX_speed = 4
+var tracerNodeTrailY_speed = 4
+var tracerNodeTrailW_Xspeed = 0
+var tracerNodeTrailW_Yspeed = 0
+var tracerNodeTrailW_Rotation = 0
+var tracerNodeTrailW_Zoom = 0
+
+function POwO_RUNGRAPH()
+{
+    POwO_UpdateWipers();
+    if (tracerSampleTime >= tracerSampleInterval-1)
+    {
+        POwO_trailNodeGenerate();
+        tracerSampleTime = 0
+    }
+    else
+    {
+        tracerSampleTime++
+    }
+    POwO_drawCanvas();
+}
+
+POwO_Config_Misc()
+POwO_Config_Visuals()
+var RUNGRAPH; //used for interval calling
+var RUNGRAPH = setInterval(POwO_RUNGRAPH,1)
