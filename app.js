@@ -324,36 +324,42 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
     {
         //WARNING : i over here is not index, instead, it is current coordX
         let temp_doublesided = false;
+        let temp_LineWidthCatch = 0;
         if (i === cx)
         {
             //this is the major tick
-            KanvasContext.lineWidth = visual_gridY_major_thickness;
+            temp_LineWidthCatch = visual_gridY_major_thickness;
             KanvasContext.strokeStyle = visual_gridY_major_color;
         }
         else if ( temp_tick_gridXcounter % gridXInterval === 0 )
         {
             //this is a large tick
-            KanvasContext.lineWidth = visual_gridX_large_thickness;
+            temp_LineWidthCatch = visual_gridX_large_thickness;
             KanvasContext.strokeStyle = visual_gridX_large_color;
             temp_doublesided = true
         }
         else
         {
             //this is a small tick
-            KanvasContext.lineWidth = visual_gridX_small_thickness;
+            temp_LineWidthCatch = visual_gridX_small_thickness;
             KanvasContext.strokeStyle = visual_gridX_small_color;
             temp_doublesided = true
         }
-        KanvasContext.beginPath();
-        KanvasContext.moveTo( i , 0 ) ;
-        KanvasContext.lineTo( i , Kanvas.height );
-        KanvasContext.stroke();
-        if (temp_doublesided)
+
+        if ( 0 < temp_LineWidthCatch )
         {
+            KanvasContext.lineWidth = temp_LineWidthCatch
             KanvasContext.beginPath();
-            KanvasContext.moveTo( cx - (i - cx) , 0 ) ;
-            KanvasContext.lineTo( cx - (i - cx) , Kanvas.height );
+            KanvasContext.moveTo( i , 0 ) ;
+            KanvasContext.lineTo( i , Kanvas.height );
             KanvasContext.stroke();
+            if (temp_doublesided)
+            {
+                KanvasContext.beginPath();
+                KanvasContext.moveTo( cx - (i - cx) , 0 ) ;
+                KanvasContext.lineTo( cx - (i - cx) , Kanvas.height );
+                KanvasContext.stroke();
+            }   
         }
         temp_tick_gridXcounter++;
     }
@@ -364,37 +370,44 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
     {
         //WARNING : i over here is not index, instead, it is current coordX
         let temp_doublesided = false;
+        let temp_LineWidthCatch = 0;
         if (i === cy)
         {
             //this is the major tick
-            KanvasContext.lineWidth = visual_gridX_major_thickness;
+            temp_LineWidthCatch = visual_gridX_major_thickness;
             KanvasContext.strokeStyle = visual_gridX_major_color;
         }
         else if ( temp_tick_gridYcounter % gridYInterval === 0 )
         {
             //this is a large tick
-            KanvasContext.lineWidth = visual_gridY_large_thickness;
+            temp_LineWidthCatch = visual_gridY_large_thickness;
             KanvasContext.strokeStyle = visual_gridY_large_color;
             temp_doublesided = true
         }
         else
         {
             //this is a small tick
-            KanvasContext.lineWidth = visual_gridY_small_thickness;
+            temp_LineWidthCatch = visual_gridY_small_thickness;
             KanvasContext.strokeStyle = visual_gridY_small_color;
             temp_doublesided = true
         }
-        KanvasContext.beginPath();
-        KanvasContext.moveTo( 0 , i ) ;
-        KanvasContext.lineTo( Kanvas.width , i);
-        KanvasContext.stroke();
-        if (temp_doublesided)
+
+        if (0 < temp_LineWidthCatch)
         {
+            KanvasContext.lineWidth = temp_LineWidthCatch;
             KanvasContext.beginPath();
-            KanvasContext.moveTo( 0 , cy - (i - cy)) ;
-            KanvasContext.lineTo( Kanvas.width , cy - (i - cy));
+            KanvasContext.moveTo( 0 , i ) ;
+            KanvasContext.lineTo( Kanvas.width , i);
             KanvasContext.stroke();
+            if (temp_doublesided)
+            {
+                KanvasContext.beginPath();
+                KanvasContext.moveTo( 0 , cy - (i - cy)) ;
+                KanvasContext.lineTo( Kanvas.width , cy - (i - cy));
+                KanvasContext.stroke();
+            }
         }
+
         temp_tick_gridYcounter++;
     }
     
@@ -440,7 +453,7 @@ function POwO_drawCanvas() //draw everything, wipers, trails, etc
     (
         cx + tracer[0] ,
         cy - tracer[1] ,
-        visual_node_radius, 0, Math.PI * 2
+        visual_tracer_radius, 0, Math.PI * 2
     );
     KanvasContext.strokeStyle = visual_tracer_color // ring color
     KanvasContext.fillStyle = visual_tracer_color //fill color
@@ -576,6 +589,7 @@ function POwO_Config_Visuals()
     visual_node_color = "rgba(" + POwO_docgetel("field_visual_node_color").value + ")"
     visual_arm_color = "rgba(" + POwO_docgetel("field_visual_arm_color").value + ")"
     visual_arm_thickness = POwO_docgetUsernum("field_visual_arm_thickness")
+    visual_tracer_radius = POwO_docgetUsernum("field_visual_tracer_radius")
     visual_tracer_color = "rgba(" + POwO_docgetel("field_visual_tracer_color").value + ")"
     
     //trails
@@ -722,8 +736,9 @@ var visual_node_radius = 8
 var visual_node_color = "255,192,0,1"
 var visual_arm_color = "255,192,0,1"
 var visual_arm_thickness = 5
-var visual_tracer_color = "255,0,0,1"
 
+var visual_tracer_radius = 8
+var visual_tracer_color = "255,0,0,1"
 var visual_trailNode_color = [[255,255,255,1,0],[255,255,255,1,1]] //[r,g,b,a,colorStoppingPoint] and repeat
 var visual_trailNode_thickness = 5
 var visual_trailNodeX_thickness = 0
