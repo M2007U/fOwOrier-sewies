@@ -196,7 +196,7 @@ I would personally suggest that you can have the following URL Opened while read
             -720&0&1\\
             360&0&1\\
             720&0&2
-            \end{pmatrix}^{fowo\_WSpace}
+            \end{pmatrix}^{fowo\_LSpace}
             \end{align*}
             $$
             <br><br>
@@ -680,7 +680,7 @@ I would personally suggest that you can have the following URL Opened while read
             <tr>
                 <td>Communitivity</td>
                 <td>you can arrange radii however you like, order doesn't matter since addition is communitive</td>
-                <td>radius are in a hierarchical structure, order matters</td>
+                <td>radii are in a hierarchical structure, order matters</td>
             </tr>
             <tr>
                 <td>Pattern Dsicovery</td>
@@ -689,7 +689,7 @@ I would personally suggest that you can have the following URL Opened while read
             </tr>
             <tr>
                 <td>Popularity and Convention</td>
-                <td>the popular convention that the Math community and internet uses, also makes proof easier</td>
+                <td>the popular convention that the Math community and internet uses, also makes proofs easier</td>
                 <td>fOwOrier Sewies uses this, can be implemented in Game Engines since Game Engines has Hiearchy for Game Objects.</td>
             </tr>
         </table>
@@ -781,11 +781,11 @@ I would personally suggest that you can have the following URL Opened while read
     Remember the URL at the very beginning ? It is better to pull that up now OwO.
 
     <dowoc-call title="✏️ Note" color-all="64,128,255" >
-        if you saw any matrix notation for FOwOrierSewies in Local space, this means you can simple copy the given numbers separated by commas into the Harmonic Config Box in the URL
+        if you saw any matrix notation for FOwOrierSewies in Local space, this means you can simply copy the given numbers separated by commas into the Harmonic Config Box
     </dowoc-call>
 
     <dowoc-call title="⚠️ Warning" color-all="255,128,0">
-        when you see a LocalSpace configurations, these are only templates, not rules, feel free to change different parameters to different values, the template is made for starting somewhere
+        when you see a LocalSpace configuration, these are only templates, not rules, feel free to change different parameters to different values, the templates are made for starting somewhere
     </dowoc-call>
 
     <h2>4.1 - University Fourier Series</h2>
@@ -1002,7 +1002,7 @@ I would personally suggest that you can have the following URL Opened while read
 
     <div class="Gap_75"></div>
 
-    <h2>4.5 - (S,-kP,P,kP) family</h2>
+    <h2>4.5 - f:(S,-kP,P,kP);p:0;a:1 family</h2>
 
         FOwOrier Sewies was premiered in a VRChat World I've made : Dimension Structure - A07:R06 - Kontainer
         during that time, I was exploring Fourier Series on my selfmade VRChat gadget in my University Classroom (South Dakota State University - Daktronics Engineering Hall Room370). And I came across the following configuration
@@ -1217,7 +1217,8 @@ I would personally suggest that you can have the following URL Opened while read
             Notice that the sum in the parenthesis can be treated as a geometric series, where the first term is $\frac{e^{0it}}{k^0}$ and the ratio is $\frac{e^{it}}{k}$. in order for the sum to converge, the magnitude of the ratio must be smaller than one, that is
             <br><br>
             $$
-            \begin{align*}\frac{e^{it}}{k} | &< 1 \\\\
+            \begin{align*}
+            | \frac{e^{it}}{k} | &< 1 \\\\
             \because |e^{it}| &= 1 \\\\
             \therefore |k| &> 1\end{align*}
             $$
@@ -1541,6 +1542,31 @@ I would personally suggest that you can have the following URL Opened while read
         <li>H : Vertical radius</li>
         <li>$\phi$ : Vertical phase offset</li>
         </ul>
+
+    <div class="Gap_75"></div>
+
+    <h2>4.8 - f:(s/p,1,-2,4);p:0;a:(8,4+k,8,1) family</h2>
+
+        here is the basic template :
+
+        $$
+        \begin{pmatrix}
+        \frac{s}{p} & 0 & 8 \\
+        1 & 0 & 4 + k \\
+        -2 & 0 & 8 \\
+        4 & 0 & 1 + t \\
+        \end{pmatrix}
+        $$
+
+        before immediately crunching the whole thing, let's set $\frac{s}{p} = 0$<br>
+        meaning we can see what a "petal" looks like<br>
+        <br>
+        and now feel free to adjust $k$, that relates to how thick the petal is.<br>
+        as for $t$, that adjustes the tip of the petal<br>
+        <br>
+        sometimes when $\frac{s}{p}$ is too fast,<br>
+        you can try crank up $k$.<br>
+        and you can shrink $t$ accordingly <br>
 
     <div class="Gap_75"></div>
 
